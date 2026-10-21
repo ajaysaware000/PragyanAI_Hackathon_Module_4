@@ -1,7 +1,101 @@
-district,sector,skill,demand_score,gap_score,training_access,momentum,period,source
-Bengaluru Urban,IT,Python,85,75,60,80,2025,Demo data
-Mysuru,IT,Python,65,60,55,65,2025,Demo data
-Belagavi,Manufacturing,Electrical Skills,70,65,45,55,2025,Demo data
-Kalaburagi,Agriculture,Data Analytics,45,70,35,50,2025,Demo data
-Bengaluru Urban,IT,SQL,80,70,65,75,2025,Demo data
-Mysuru,Manufacturing,Electrical Skills,60,55,50,45,2025,Demo data
+district	sector	skill	demand_score	gap_score	training_access	momentum	period	source
+Bengaluru Urban	IT	Python	82	74	51	53	2025	Demo data
+Belagavi	Logistics	Warehouse Operations	41	59	31	79	2025	Demo data
+Bengaluru Urban	IT	Python	40	28	49	89	2025	Demo data
+Dharwad	IT	Python	70	57	73	53	2025	Demo data
+Kalaburagi	Renewable Energy	Solar Technician	52	27	40	79	2025	Demo data
+Mysuru	Manufacturing	Electrical Skills	44	32	63	38	2025	Demo data
+Bengaluru Urban	Manufacturing	CNC Machine Operation	41	38	64	58	2025	Demo data
+Bengaluru Urban	Logistics	Warehouse Operations	64	73	35	73	2025	Demo data
+Bengaluru Urban	Healthcare	Nursing Assistance	53	68	66	49	2025	Demo data
+Bengaluru Urban	IT	Python	77	66	57	35	2025	Demo data
+Belagavi	IT	SQL	59	51	78	71	2025	Demo data
+Belagavi	Manufacturing	Welding	57	45	54	34	2025	Demo data
+Dharwad	Agriculture	Agri Equipment Operation	45	54	51	45	2025	Demo data
+Kalaburagi	Manufacturing	CNC Machine Operation	52	67	48	66	2025	Demo data
+Bengaluru Urban	IT	Web Development	87	64	60	76	2025	Demo data
+Mysuru	IT	SQL	48	59	60	52	2025	Demo data
+Kalaburagi	Manufacturing	CNC Machine Operation	91	95	78	43	2025	Demo data
+Mysuru	IT	Data Analytics	50	60	53	79	2025	Demo data
+Dharwad	Manufacturing	CNC Machine Operation	58	47	37	90	2025	Demo data
+Kalaburagi	IT	SQL	83	61	34	44	2025	Demo data
+Belagavi	Agriculture	Agri Equipment Operation	62	75	28	74	2025	Demo data
+Kalaburagi	Renewable Energy	Solar Technician	64	72	52	95	2025	Demo data
+Bengaluru Urban	Agriculture	Agri Equipment Operation	81	63	54	68	2025	Demo data
+Bengaluru Urban	Manufacturing	Electrical Skills	62	47	78	25	2025	Demo data
+Mysuru	Healthcare	Nursing Assistance	83	69	84	38	2025	Demo data
+Mysuru	Agriculture	Agri Equipment Operation	67	80	45	44	2025	Demo data
+Mysuru	IT	Data Analytics	69	77	20	66	2025	Demo data
+Kalaburagi	IT	Python	42	40	59	55	2025	Demo data
+Bengaluru Urban	IT	Web Development	91	95	30	35	2025	Demo data
+Kalaburagi	IT	SQL	83	92	36	41	2025	Demo data
+Kalaburagi	Healthcare	Nursing Assistance	45	36	74	52	2025	Demo data
+Dharwad	Logistics	Warehouse Operations	79	66	59	76	2025	Demo data
+Mysuru	Healthcare	Healthcare Support	92	95	77	40	2025	Demo data
+Belagavi	IT	Web Development	39	35	22	95	2025	Demo data
+Belagavi	Renewable Energy	Solar Technician	49	24	29	32	2025	Demo data
+Belagavi	IT	SQL	92	69	62	34	2025	Demo data
+Dharwad	IT	Web Development	52	69	82	52	2025	Demo data
+Dharwad	IT	Data Analytics	81	92	80	56	2025	Demo data
+Kalaburagi	Manufacturing	CNC Machine Operation	47	28	32	80	2025	Demo data
+Mysuru	Manufacturing	CNC Machine Operation	61	65	26	37	2025	Demo data
+Bengaluru Urban	Manufacturing	CNC Machine Operation	81	77	33	56	2025	Demo data
+Belagavi	IT	Web Development	69	72	37	79	2025	Demo data
+Belagavi	Manufacturing	Electrical Skills	64	54	29	81	2025	Demo data
+Dharwad	IT	SQL	38	54	21	36	2025	Demo data
+Belagavi	IT	Data Analytics	61	67	81	52	2025	Demo data
+Kalaburagi	IT	Python	45	44	20	74	2025	Demo data
+Mysuru	Healthcare	Healthcare Support	53	55	82	44	2025	Demo data
+Belagavi	Manufacturing	Electrical Skills	48	26	27	65	2025	Demo data
+Bengaluru Urban	IT	Python	72	77	84	92	2025	Demo data
+Belagavi	IT	Python	67	47	43	33	2025	Demo data
+Dharwad	IT	SQL	78	68	71	40	2025	Demo data
+Dharwad	IT	Web Development	72	85	25	35	2025	Demo data
+Kalaburagi	Agriculture	Agri Equipment Operation	72	83	60	58	2025	Demo data
+Belagavi	Agriculture	Agri Equipment Operation	80	75	50	58	2025	Demo data
+Kalaburagi	IT	Data Analytics	77	93	58	83	2025	Demo data
+Mysuru	IT	SQL	35	39	32	34	2025	Demo data
+Dharwad	IT	Web Development	67	58	36	69	2025	Demo data
+Bengaluru Urban	IT	Web Development	58	51	40	81	2025	Demo data
+Dharwad	Logistics	Warehouse Operations	54	68	21	95	2025	Demo data
+Mysuru	Agriculture	Agri Equipment Operation	41	24	53	39	2025	Demo data
+Bengaluru Urban	Logistics	Warehouse Operations	70	54	54	61	2025	Demo data
+Dharwad	IT	Web Development	80	76	46	58	2025	Demo data
+Dharwad	Healthcare	Healthcare Support	51	29	31	79	2025	Demo data
+Mysuru	IT	Python	35	31	36	58	2025	Demo data
+Belagavi	Logistics	Warehouse Operations	63	73	74	26	2025	Demo data
+Bengaluru Urban	IT	SQL	95	95	39	94	2025	Demo data
+Bengaluru Urban	Manufacturing	Welding	72	82	38	80	2025	Demo data
+Belagavi	IT	Python	54	52	25	70	2025	Demo data
+Belagavi	Agriculture	Agri Equipment Operation	50	67	33	70	2025	Demo data
+Dharwad	Manufacturing	CNC Machine Operation	74	58	50	45	2025	Demo data
+Belagavi	Manufacturing	CNC Machine Operation	36	22	62	77	2025	Demo data
+Belagavi	Manufacturing	Electrical Skills	45	64	33	73	2025	Demo data
+Bengaluru Urban	Healthcare	Healthcare Support	49	36	78	69	2025	Demo data
+Mysuru	IT	Web Development	49	25	44	76	2025	Demo data
+Mysuru	Manufacturing	Electrical Skills	90	69	55	69	2025	Demo data
+Dharwad	Manufacturing	CNC Machine Operation	78	87	62	28	2025	Demo data
+Bengaluru Urban	Manufacturing	Electrical Skills	46	58	53	29	2025	Demo data
+Bengaluru Urban	Renewable Energy	Solar Technician	62	59	60	80	2025	Demo data
+Dharwad	Healthcare	Nursing Assistance	42	41	44	57	2025	Demo data
+Bengaluru Urban	Logistics	Warehouse Operations	62	37	45	71	2025	Demo data
+Kalaburagi	IT	SQL	95	95	62	65	2025	Demo data
+Bengaluru Urban	Logistics	Warehouse Operations	92	86	84	64	2025	Demo data
+Kalaburagi	Manufacturing	Welding	60	79	57	95	2025	Demo data
+Belagavi	IT	Web Development	61	78	68	47	2025	Demo data
+Dharwad	Renewable Energy	Solar Technician	54	54	20	63	2025	Demo data
+Mysuru	IT	Web Development	62	74	61	84	2025	Demo data
+Kalaburagi	Healthcare	Healthcare Support	78	66	85	85	2025	Demo data
+Belagavi	Agriculture	Agri Equipment Operation	40	33	85	67	2025	Demo data
+Bengaluru Urban	IT	Web Development	78	72	48	50	2025	Demo data
+Belagavi	IT	Python	37	27	80	34	2025	Demo data
+Kalaburagi	Manufacturing	CNC Machine Operation	91	95	44	74	2025	Demo data
+Kalaburagi	Manufacturing	CNC Machine Operation	50	34	20	38	2025	Demo data
+Kalaburagi	IT	Web Development	46	65	79	31	2025	Demo data
+Dharwad	IT	Web Development	93	75	78	42	2025	Demo data
+Kalaburagi	Agriculture	Agri Equipment Operation	68	78	60	81	2025	Demo data
+Dharwad	Logistics	Warehouse Operations	92	95	74	95	2025	Demo data
+Kalaburagi	IT	Data Analytics	82	87	77	58	2025	Demo data
+Belagavi	Agriculture	Agri Equipment Operation	52	60	82	55	2025	Demo data
+Mysuru	Healthcare	Healthcare Support	39	59	56	55	2025	Demo data
+Mysuru	Manufacturing	Welding	55	64	30	42	2025	Demo data
