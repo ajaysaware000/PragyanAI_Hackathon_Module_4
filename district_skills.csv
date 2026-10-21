@@ -1,101 +1,201 @@
-district	sector	skill	employed	unemployed	job_openings	skill_demand	available_candidates	skill_gap
-Bengaluru Urban	IT	Python	6574	1426	175	428	171	257
-Bengaluru Urban	Renewable Energy	Solar Technician	6567	2533	94	804	532	272
-Bengaluru Urban	IT	Python	1267	1195	169	717	716	1
-Bengaluru Urban	Healthcare	Healthcare Support	2128	2961	329	629	325	304
-Kalaburagi	Healthcare	Healthcare Support	2778	326	131	632	448	184
-Mysuru	IT	Data Analytics	2263	1678	102	294	294	0
-Bengaluru Urban	Manufacturing	Electrician	7442	1708	359	470	513	0
-Bengaluru Urban	Renewable Energy	Solar Technician	4263	2496	113	587	180	407
-Dharwad	Manufacturing	Electrician	7294	2874	366	570	296	274
-Bengaluru Urban	IT	Python	5917	1233	198	281	219	62
-Bengaluru Urban	Manufacturing	Welding	2777	2157	375	573	266	307
-Mysuru	Manufacturing	Electrician	2216	1393	399	863	173	690
-Dharwad	Renewable Energy	Solar Technician	1901	2487	175	367	336	31
-Kalaburagi	Manufacturing	Electrician	5742	2581	162	532	157	375
-Belagavi	IT	Python	7094	1592	255	474	133	341
-Belagavi	Healthcare	Healthcare Support	7679	1588	158	871	611	260
-Kalaburagi	Renewable Energy	Solar Technician	4258	885	185	342	226	116
-Dharwad	Healthcare	Healthcare Support	2652	2694	269	797	508	289
-Mysuru	IT	Data Analytics	1633	2387	302	293	124	169
-Bengaluru Urban	IT	Data Analytics	5640	955	398	632	710	0
-Bengaluru Urban	Manufacturing	Welding	3626	2740	289	741	357	384
-Dharwad	IT	Python	6072	769	399	749	373	376
-Mysuru	IT	Python	2904	2080	130	664	103	561
-Mysuru	Healthcare	Healthcare Support	6741	1031	309	308	252	56
-Dharwad	Healthcare	Healthcare Support	2129	926	241	365	376	0
-Dharwad	IT	Python	5406	1627	300	219	128	91
-Mysuru	Manufacturing	Electrician	2461	537	173	780	180	600
-Bengaluru Urban	Renewable Energy	Solar Technician	4481	583	322	328	165	163
-Kalaburagi	Healthcare	Healthcare Support	1852	1385	320	821	533	288
-Belagavi	Healthcare	Healthcare Support	6687	1123	209	608	482	126
-Kalaburagi	Healthcare	Healthcare Support	4198	795	176	430	132	298
-Mysuru	IT	Python	5319	2568	167	802	325	477
-Bengaluru Urban	IT	Python	6298	2884	80	434	134	300
-Bengaluru Urban	Manufacturing	Electrician	1080	2405	171	485	442	43
-Kalaburagi	IT	Data Analytics	4917	841	342	790	584	206
-Belagavi	Manufacturing	Welding	7115	1967	147	296	149	147
-Kalaburagi	Manufacturing	Electrician	3969	1983	289	255	150	105
-Bengaluru Urban	Manufacturing	Welding	6465	1689	105	454	198	256
-Belagavi	Healthcare	Healthcare Support	4175	874	266	387	242	145
-Kalaburagi	IT	Data Analytics	7663	608	276	763	200	563
-Bengaluru Urban	Renewable Energy	Solar Technician	4928	360	97	442	185	257
-Kalaburagi	Manufacturing	Welding	4443	1175	255	260	184	76
-Kalaburagi	IT	Python	3698	1386	282	492	316	176
-Dharwad	Renewable Energy	Solar Technician	6385	2293	129	394	251	143
-Belagavi	IT	Python	5244	2520	81	521	158	363
-Bengaluru Urban	Healthcare	Healthcare Support	4405	2359	321	361	129	232
-Dharwad	IT	Python	7474	1061	85	809	169	640
-Belagavi	Manufacturing	Welding	1482	2633	176	792	708	84
-Bengaluru Urban	Healthcare	Healthcare Support	1171	2017	386	797	678	119
-Dharwad	Manufacturing	Electrician	2636	1136	392	521	344	177
-Mysuru	Manufacturing	Welding	1572	2943	203	668	423	245
-Bengaluru Urban	IT	Python	4254	2844	338	302	137	165
-Dharwad	IT	Data Analytics	4644	1386	117	557	170	387
-Belagavi	Manufacturing	Electrician	2834	946	274	756	820	0
-Mysuru	Healthcare	Healthcare Support	7111	2978	320	208	270	0
-Dharwad	Manufacturing	Electrician	5934	724	118	470	159	311
-Bengaluru Urban	Renewable Energy	Solar Technician	5032	936	189	488	409	79
-Belagavi	Renewable Energy	Solar Technician	3308	1133	374	470	358	112
-Kalaburagi	Manufacturing	Electrician	7916	508	97	849	533	316
-Mysuru	IT	Python	529	1666	116	852	368	484
-Belagavi	Renewable Energy	Solar Technician	4119	2559	268	774	109	665
-Bengaluru Urban	IT	Python	7734	910	329	236	313	0
-Mysuru	Healthcare	Healthcare Support	5026	906	270	330	121	209
-Mysuru	Manufacturing	Electrician	7864	463	233	415	449	0
-Belagavi	Renewable Energy	Solar Technician	1342	1748	336	616	258	358
-Belagavi	IT	Data Analytics	7052	1025	261	225	145	80
-Mysuru	Manufacturing	Welding	7071	1316	186	363	459	0
-Bengaluru Urban	Manufacturing	Welding	7644	458	290	427	202	225
-Kalaburagi	Manufacturing	Electrician	3000	1232	164	224	268	0
-Belagavi	Manufacturing	Welding	3189	1441	85	485	279	206
-Dharwad	Manufacturing	Welding	6066	2496	219	228	129	99
-Mysuru	IT	Data Analytics	5256	1387	69	311	405	0
-Kalaburagi	Manufacturing	Electrician	6468	1584	273	820	623	197
-Bengaluru Urban	Manufacturing	Welding	7868	2661	147	460	122	338
-Kalaburagi	IT	Python	4759	2505	393	401	286	115
-Kalaburagi	IT	Python	5941	1652	369	521	227	294
-Mysuru	Healthcare	Healthcare Support	3033	1972	217	612	402	210
-Dharwad	IT	Data Analytics	2071	2022	390	588	278	310
-Dharwad	Healthcare	Healthcare Support	2965	1963	330	200	177	23
-Mysuru	IT	Data Analytics	4021	2675	360	870	429	441
-Kalaburagi	Manufacturing	Welding	4122	1175	311	684	273	411
-Bengaluru Urban	Manufacturing	Electrician	4722	2892	367	543	195	348
-Belagavi	Renewable Energy	Solar Technician	3042	1220	151	350	112	238
-Bengaluru Urban	IT	Data Analytics	4392	2803	87	666	524	142
-Dharwad	IT	Data Analytics	6384	1872	303	609	349	260
-Belagavi	Renewable Energy	Solar Technician	6133	322	104	635	324	311
-Belagavi	Renewable Energy	Solar Technician	4743	2202	75	770	355	415
-Bengaluru Urban	Manufacturing	Welding	1592	2203	391	743	672	71
-Dharwad	Manufacturing	Electrician	6687	2112	363	716	536	180
-Dharwad	Manufacturing	Welding	7849	951	293	660	365	295
-Belagavi	Renewable Energy	Solar Technician	2771	2435	298	841	344	497
-Mysuru	Manufacturing	Welding	1134	1470	170	478	271	207
-Mysuru	Healthcare	Healthcare Support	1160	866	127	436	296	140
-Belagavi	Renewable Energy	Solar Technician	2252	563	262	617	438	179
-Dharwad	Manufacturing	Welding	3906	555	155	630	498	132
-Dharwad	Renewable Energy	Solar Technician	660	2658	244	688	106	582
-Mysuru	Manufacturing	Electrician	6672	1897	264	751	659	92
-Dharwad	IT	Data Analytics	4499	1198	189	646	597	49
-Bengaluru Urban	Manufacturing	Welding	3253	1956	134	678	230	448
-Dharwad	Healthcare	Healthcare Support	720	1913	353	777	778	0
+Record Type	Name	Employed Students	Unemployed Students	Job Openings	Openings	Job Fairs Conducted	Students Participated	Students Placed	Companies Participated	Companies Hired	Students Enrolled	Students Skilled
+District	District 01	628	175	481								
+Job Fair	District 01					5	428	222	57	11		
+District	District 02	578	582	232								
+Job Fair	District 02					2	295	303	24	37		
+District	District 03	454	353	865								
+Job Fair	District 03					10	629	305	38	42		
+District	District 04	969	156	363								
+Job Fair	District 04					8	548	364	19	18		
+District	District 05	1089	254	294								
+Job Fair	District 05					8	299	447	32	43		
+District	District 06	941	194	670								
+Job Fair	District 06					10	327	467	15	40		
+District	District 07	1000	520	791								
+Job Fair	District 07					5	921	151	12	19		
+District	District 08	992	231	438								
+Job Fair	District 08					3	589	364	39	45		
+District	District 09	1147	316	579								
+Job Fair	District 09					7	414	353	54	9		
+District	District 10	750	696	450								
+Job Fair	District 10					4	673	468	27	45		
+District	District 11	849	482	257								
+Job Fair	District 11					5	1041	112	30	30		
+District	District 12	948	217	416								
+Job Fair	District 12					11	1097	402	23	36		
+District	District 13	1210	619	346								
+Job Fair	District 13					6	342	332	57	40		
+District	District 14	938	588	797								
+Job Fair	District 14					8	570	304	18	37		
+District	District 15	1410	243	248								
+Job Fair	District 15					3	356	243	60	32		
+District	District 16	530	544	590								
+Job Fair	District 16					11	679	621	26	40		
+District	District 17	423	267	898								
+Job Fair	District 17					10	968	353	59	26		
+District	District 18	628	450	645								
+Job Fair	District 18					4	664	83	56	21		
+District	District 19	1425	332	719								
+Job Fair	District 19					3	1091	385	50	37		
+District	District 20	807	306	582								
+Job Fair	District 20					4	752	623	10	43		
+District	District 21	1063	650	219								
+Job Fair	District 21					3	1151	451	29	20		
+District	District 22	518	396	780								
+Job Fair	District 22					3	287	577	14	39		
+District	District 23	657	281	875								
+Job Fair	District 23					9	1169	642	20	21		
+District	District 24	1480	583	416								
+Job Fair	District 24					10	973	285	55	24		
+District	District 25	1217	532	648								
+Job Fair	District 25					10	662	203	25	19		
+District	District 26	531	496	221								
+Job Fair	District 26					11	767	315	47	19		
+District	District 27	414	222	846								
+Job Fair	District 27					2	434	149	12	26		
+District	District 28	545	676	443								
+Job Fair	District 28					6	885	577	23	39		
+District	District 29	670	634	448								
+Job Fair	District 29					9	1026	496	22	11		
+District	District 30	598	591	562								
+Job Fair	District 30					8	620	558	56	8		
+District	District 31	601	212	612								
+Job Fair	District 31					7	1019	191	25	17		
+District	District 32	789	699	659								
+Job Fair	District 32					4	632	267	27	34		
+District	District 33	911	227	653								
+Job Fair	District 33					10	300	131	51	39		
+District	District 34	430	245	442								
+Job Fair	District 34					4	616	577	40	18		
+District	District 35	1221	210	368								
+Job Fair	District 35					8	202	479	26	34		
+District	District 36	984	583	769								
+Job Fair	District 36					12	935	578	19	17		
+District	District 37	1007	372	259								
+Job Fair	District 37					11	953	635	13	25		
+District	District 38	517	201	798								
+Job Fair	District 38					9	714	623	20	8		
+District	District 39	1440	232	390								
+Job Fair	District 39					3	809	149	53	20		
+District	District 40	1226	272	783								
+Job Fair	District 40					5	792	688	12	44		
+District	District 41	567	579	873								
+Job Fair	District 41					11	778	615	30	21		
+District	District 42	818	471	444								
+Job Fair	District 42					6	605	214	52	24		
+District	District 43	1336	473	274								
+Job Fair	District 43					2	669	656	16	9		
+District	District 44	836	668	471								
+Job Fair	District 44					4	1155	437	14	20		
+District	District 45	1156	441	361								
+Job Fair	District 45					9	1053	636	55	24		
+District	District 46	1483	158	883								
+Job Fair	District 46					10	506	186	18	21		
+District	District 47	636	259	766								
+Job Fair	District 47					4	478	368	48	18		
+District	District 48	1102	358	849								
+Job Fair	District 48					6	717	580	26	8		
+District	District 49	589	583	483								
+Job Fair	District 49					2	203	421	59	13		
+District	District 50	936	315	652								
+Job Fair	District 50					10	922	517	45	5		
+District	District 51	629	227	352								
+Job Fair	District 51					10	236	458	47	40		
+District	District 52	703	590	330								
+Job Fair	District 52					2	515	453	60	7		
+District	District 53	1132	365	898								
+Job Fair	District 53					5	882	185	32	40		
+District	District 54	1232	308	442								
+Job Fair	District 54					4	1199	261	36	6		
+District	District 55	767	490	621								
+Job Fair	District 55					12	1084	334	27	15		
+District	District 56	621	541	239								
+Job Fair	District 56					9	427	284	39	27		
+District	District 57	1025	383	428								
+Job Fair	District 57					2	875	277	35	26		
+District	District 58	970	221	485								
+Job Fair	District 58					7	856	601	35	39		
+District	District 59	1078	178	318								
+Job Fair	District 59					6	382	674	26	7		
+District	District 60	622	594	553								
+Job Fair	District 60					7	646	700	42	12		
+District	District 61	1188	344	460								
+Job Fair	District 61					2	925	526	10	38		
+District	District 62	803	522	641								
+Job Fair	District 62					3	1171	418	49	25		
+District	District 63	655	457	719								
+Job Fair	District 63					6	882	498	30	30		
+District	District 64	1005	280	396								
+Job Fair	District 64					8	880	468	53	16		
+District	District 65	1016	565	761								
+Job Fair	District 65					2	511	373	23	32		
+District	District 66	1059	626	652								
+Job Fair	District 66					9	891	298	42	35		
+District	District 67	747	236	490								
+Job Fair	District 67					10	879	423	15	20		
+District	District 68	1035	380	403								
+Job Fair	District 68					4	225	127	25	35		
+District	District 69	549	616	624								
+Job Fair	District 69					12	789	279	55	29		
+District	District 70	1412	559	449								
+Job Fair	District 70					4	871	85	58	11		
+District	District 71	1270	374	380								
+Job Fair	District 71					10	675	131	45	20		
+District	District 72	648	617	336								
+Job Fair	District 72					9	883	623	45	43		
+District	District 73	1049	603	827								
+Job Fair	District 73					10	636	641	38	15		
+District	District 74	1372	610	465								
+Job Fair	District 74					5	1060	363	59	38		
+District	District 75	1392	394	481								
+Job Fair	District 75					9	279	372	25	22		
+District	District 76	1087	477	753								
+Job Fair	District 76					3	341	234	24	29		
+District	District 77	712	369	265								
+Job Fair	District 77					8	617	418	44	34		
+District	District 78	1251	213	411								
+Job Fair	District 78					8	598	678	54	6		
+District	District 79	1179	638	206								
+Job Fair	District 79					7	505	479	36	39		
+District	District 80	851	649	424								
+Job Fair	District 80					6	646	577	11	29		
+District	District 81	1088	564	369								
+Job Fair	District 81					9	1141	210	49	39		
+District	District 82	455	553	806								
+Job Fair	District 82					11	878	107	15	32		
+District	District 83	677	622	386								
+Job Fair	District 83					2	466	468	30	18		
+District	District 84	1331	484	545								
+Job Fair	District 84					8	484	511	26	10		
+District	District 85	1363	169	752								
+Job Fair	District 85					2	1174	438	24	9		
+District	District 86	482	181	453								
+Job Fair	District 86					5	1059	100	49	14		
+District	District 87	888	279	684								
+Job Fair	District 87					12	317	657	23	34		
+District	District 88	924	527	371								
+Job Fair	District 88					11	821	197	59	15		
+District	District 89	1037	260	792								
+Job Fair	District 89					2	1151	399	46	29		
+District	District 90	1212	353	277								
+Job Fair	District 90					11	907	328	16	24		
+District	District 91	647	192	555								
+Job Fair	District 91					10	638	459	14	37		
+District	District 92	1098	162	630								
+Job Fair	District 92					9	308	523	33	45		
+District	District 93	1341	306	645								
+Job Fair	District 93					4	951	614	51	22		
+District	District 94	1390	626	646								
+Job Fair	District 94					11	474	410	25	10		
+District	District 95	971	611	449								
+Job Fair	District 95					9	783	468	31	6		
+District	District 96	1412	482	386								
+Job Fair	District 96					9	417	443	26	26		
+District	District 97	972	432	769								
+Job Fair	District 97					2	729	275	15	20		
+District	District 98	1232	650	768								
+Job Fair	District 98					5	907	567	51	36		
+District	District 99	1317	167	295								
+Job Fair	District 99					6	426	494	54	20		
+District	District 100	1027	527	684								
+Job Fair	District 100					10	743	432	37	40
