@@ -1,5 +1,15 @@
-import streamlit as st
+import json
+import os
+
 import pandas as pd
+import plotly.express as px
+import streamlit as st
+
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
+
 
 # ==========================================
 # 1. PAGE CONFIGURATION
@@ -11,9 +21,9 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # ==========================================
 # 2. SAMPLE DATA
-# Replace this with real district data later
 # ==========================================
 
 skill_demand = pd.DataFrame({
@@ -53,9 +63,9 @@ institute_data = pd.DataFrame({
     "Students Placed": [180, 140, 110]
 })
 
+
 # ==========================================
 # 3. SESSION STATE
-# Demo authentication only; not production security
 # ==========================================
 
 if "users" not in st.session_state:
@@ -70,15 +80,349 @@ if "username" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "Explore Dashboard"
 
+if "district_data" not in st.session_state:
+    st.session_state.district_data = district_data
+
+if "skill_demand" not in st.session_state:
+    st.session_state.skill_demand = skill_demand
+
+if "sector_demand" not in st.session_state:
+    st.session_state.sector_demand = sector_demand
+
+if "job_fair_data" not in st.session_state:
+    st.session_state.job_fair_data = job_fair_data
+
+if "institute_data" not in st.session_state:
+    st.session_state.institute_data = institute_data
+
+
 # ==========================================
-# 4. APPLICATION HEADER
+# 4. AI CHART BOT FUNCTIONS
+# ==========================================
+
+CHART_SPEC_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "dataset": {
+            "type": "string",
+            "enum": [
+                "district_data",
+                "skill_demand",
+                "sector_demand",
+                "job_fair_data",
+                "institute_data"
+            ]
+        },
+        "chart_type": {
+            "type": "string",
+            "enum": ["bar", "line", "pie", "scatter"]
+        },
+        "x_column": {"type": "string"},
+        "y_columns": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 1
+        },
+        "title": {"type": "string"},
+        "explanation": {"type": "string"}
+    },
+    "required": [
+        "dataset",
+        "chart_type",
+        "x_column",
+        "y_columns",
+        "title",
+        "explanation"
+    ],
+    "additionalProperties": False
+}
+
+
+def get_available_datasets():
+    return {
+        "district_data": st.session_state.district_data,
+        "skill_demand": st.session_state.skill_demand,
+        "sector_demand": st.session_state.sector_demand,
+        "job_fair_data": st.session_state.job_fair_data,
+        "institute_data": st.session_state.institute_data,
+    }
+
+
+def build_data_context(datasets):
+    context = []
+
+    for name, df in datasets.items():
+        columns = ", ".join(df.columns)
+        context.append(f"{name}: columns = [{columns}]")
+
+    return "\n".join(context)
+
+
+def generate_chart_spec(question, datasets):
+    """Convert a natural-language question into a safe chart specification."""
+
+    if OpenAI is None:
+        raise RuntimeError("The openai package is not installed.")
+
+    api_key = os.getenv("OPENAI_API_KEY")
+
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set.")
+
+    client = OpenAI(api_key=api_key)
+
+    system_prompt = f"""
+You are a data visualization assistant for a Labour and Skill Planning System.
+
+Choose the most suitable dataset and columns for the user's question.
+
+Available datasets and columns:
+{build_data_context(datasets)}
+
+Rules:
+- Use only columns that exist in the selected dataset.
+- For comparing multiple numeric measures, use a bar chart.
+- For trends over time, use a line chart.
+- For proportion of one categorical column, use a pie chart.
+- For relationship between two numeric columns, use a scatter chart.
+- Return only the chart specification.
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question},
+        ],
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "name": "chart_specification",
+                "strict": True,
+                "schema": CHART_SPEC_SCHEMA,
+            },
+        },
+        temperature=0,
+    )
+
+    return json.loads(response.choices[0].message.content)
+
+
+def validate_chart_spec(spec, datasets):
+    dataset_name = spec["dataset"]
+    df = datasets.get(dataset_name)
+
+    if df is None:
+        raise ValueError(f"Unknown dataset: {dataset_name}")
+
+    x_column = spec["x_column"]
+    y_columns = spec["y_columns"]
+
+    if x_column not in df.columns:
+        raise ValueError(f"Column '{x_column}' does not exist in {dataset_name}.")
+
+    for column in y_columns:
+        if column not in df.columns:
+            raise ValueError(f"Column '{column}' does not exist in {dataset_name}.")
+
+    return df
+
+
+def render_chart(df, spec):
+    chart_type = spec["chart_type"]
+    x_column = spec["x_column"]
+    y_columns = spec["y_columns"]
+    title = spec["title"]
+
+    if chart_type == "bar":
+        if len(y_columns) == 1:
+            fig = px.bar(df, x=x_column, y=y_columns[0], title=title)
+        else:
+            fig = px.bar(
+                df,
+                x=x_column,
+                y=y_columns,
+                barmode="group",
+                title=title,
+            )
+
+    elif chart_type == "line":
+        fig = px.line(df, x=x_column, y=y_columns, title=title)
+
+    elif chart_type == "pie":
+        fig = px.pie(df, names=x_column, values=y_columns[0], title=title)
+
+    elif chart_type == "scatter":
+        fig = px.scatter(df, x=x_column, y=y_columns[0], title=title)
+
+    else:
+        raise ValueError(f"Unsupported chart type: {chart_type}")
+
+    fig.update_layout(template="plotly_white")
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def simple_fallback_chart(question, datasets):
+    """Offline chart selection when AI is unavailable."""
+
+    question_lower = question.lower()
+
+    if "unemploy" in question_lower:
+        df = datasets["district_data"]
+        spec = {
+            "dataset": "district_data",
+            "chart_type": "bar",
+            "x_column": "District",
+            "y_columns": ["Unemployed Students"],
+            "title": "Unemployed Students by District",
+            "explanation": "Showing unemployed students for each district."
+        }
+
+    elif "employ" in question_lower:
+        df = datasets["district_data"]
+        spec = {
+            "dataset": "district_data",
+            "chart_type": "bar",
+            "x_column": "District",
+            "y_columns": ["Employed Students", "Unemployed Students"],
+            "title": "Employed and Unemployed Students by District",
+            "explanation": "Comparing employment and unemployment across districts."
+        }
+
+    elif "skill" in question_lower:
+        df = datasets["skill_demand"]
+        spec = {
+            "dataset": "skill_demand",
+            "chart_type": "bar",
+            "x_column": "Skill",
+            "y_columns": ["Openings"],
+            "title": "Job Openings by Skill",
+            "explanation": "Showing demand for each skill."
+        }
+
+    elif "sector" in question_lower:
+        df = datasets["sector_demand"]
+        spec = {
+            "dataset": "sector_demand",
+            "chart_type": "bar",
+            "x_column": "Sector",
+            "y_columns": ["Openings"],
+            "title": "Job Openings by Sector",
+            "explanation": "Showing demand across sectors."
+        }
+
+    elif "job fair" in question_lower or "fair" in question_lower:
+        df = datasets["job_fair_data"]
+        spec = {
+            "dataset": "job_fair_data",
+            "chart_type": "bar",
+            "x_column": "District",
+            "y_columns": ["Companies Participated", "Companies Hired"],
+            "title": "Job Fair Company Participation and Hiring",
+            "explanation": "Comparing participating and hiring companies by district."
+        }
+
+    elif "institute" in question_lower or "training" in question_lower:
+        df = datasets["institute_data"]
+        spec = {
+            "dataset": "institute_data",
+            "chart_type": "bar",
+            "x_column": "Institute",
+            "y_columns": [
+                "Students Enrolled",
+                "Students Skilled",
+                "Students Placed"
+            ],
+            "title": "Training Institute Outcomes",
+            "explanation": "Comparing enrolment, training and placement outcomes."
+        }
+
+    else:
+        df = datasets["district_data"]
+        spec = {
+            "dataset": "district_data",
+            "chart_type": "bar",
+            "x_column": "District",
+            "y_columns": [
+                "Employed Students",
+                "Unemployed Students",
+                "Job Openings"
+            ],
+            "title": "District Employment Overview",
+            "explanation": "Showing employment, unemployment and openings by district."
+        }
+
+    return df, spec
+
+
+def show_ai_chart_bot():
+    st.header("🤖 AI Chart Bot")
+    st.write(
+        "Ask a question about districts, skills, sectors, training institutes "
+        "or job fairs, and get an instant chart."
+    )
+
+    datasets = get_available_datasets()
+
+    with st.expander("Available data"):
+        for name, df in datasets.items():
+            st.markdown(f"**{name}**")
+            st.dataframe(df, use_container_width=True)
+
+    example_questions = [
+        "Show unemployed students by district",
+        "Compare employed and unemployed students across districts",
+        "Show job openings by skill",
+        "Show job openings by sector",
+        "Compare companies participated and companies hired in job fairs",
+        "Show training institute outcomes"
+    ]
+
+    st.caption("Examples: " + " | ".join(example_questions))
+
+    question = st.text_input(
+        "Ask your question",
+        placeholder="e.g. Show unemployed students by district"
+    )
+
+    use_ai = st.toggle(
+        "Use AI model",
+        value=bool(os.getenv("OPENAI_API_KEY")),
+        help="Turn off to use the built-in offline chart suggestions."
+    )
+
+    if st.button("Generate Chart", use_container_width=True):
+        if not question.strip():
+            st.warning("Please enter a question.")
+            st.stop()
+
+        try:
+            if use_ai:
+                spec = generate_chart_spec(question, datasets)
+                df = validate_chart_spec(spec, datasets)
+            else:
+                df, spec = simple_fallback_chart(question, datasets)
+
+            st.success(spec["explanation"])
+            render_chart(df, spec)
+
+            with st.expander("Chart details"):
+                st.json(spec)
+
+        except Exception as e:
+            st.error(f"Could not generate the chart: {e}")
+
+
+# ==========================================
+# 5. APPLICATION HEADER
 # ==========================================
 
 st.title("🎯 Labour & Skill Planning System")
 st.caption("District-level employment, skill demand and training planning")
 
+
 # ==========================================
-# 5. REGISTER AND LOGIN
+# 6. REGISTER AND LOGIN
 # ==========================================
 
 if not st.session_state.logged_in:
@@ -161,8 +505,9 @@ if not st.session_state.logged_in:
 
     st.stop()
 
+
 # ==========================================
-# 6. SIDEBAR NAVIGATION
+# 7. SIDEBAR NAVIGATION
 # ==========================================
 
 user = st.session_state.users[st.session_state.username]
@@ -179,6 +524,7 @@ pages = [
     "Training Institutes",
     "Job Fair Companies",
     "Analytics - AI Skill Planning",
+    "AI Chart Bot",
     "Plans",
     "Executed",
     "Results"
@@ -195,8 +541,9 @@ if st.sidebar.button("Logout", use_container_width=True):
     st.session_state.username = ""
     st.rerun()
 
+
 # ==========================================
-# 7. PHASE 1: EXPLORE DASHBOARD
+# 8. EXPLORE DASHBOARD
 # ==========================================
 
 if st.session_state.page == "Explore Dashboard":
@@ -251,8 +598,9 @@ if st.session_state.page == "Explore Dashboard":
     st.subheader("District Overview — Sample Data")
     st.dataframe(district_data, use_container_width=True)
 
+
 # ==========================================
-# 8. USERS PAGE
+# 9. USERS
 # ==========================================
 
 elif st.session_state.page == "Users":
@@ -276,8 +624,9 @@ elif st.session_state.page == "Users":
 
     st.dataframe(user_groups, use_container_width=True)
 
+
 # ==========================================
-# 9. DISTRICT ADMIN DASHBOARD
+# 10. DISTRICT ADMIN DASHBOARD
 # ==========================================
 
 elif st.session_state.page == "District Admin Dashboard":
@@ -288,7 +637,6 @@ elif st.session_state.page == "District Admin Dashboard":
         "job openings, hiring companies and training outcomes."
     )
 
-    # District filter
     selected_district = st.selectbox(
         "Select District",
         district_data["District"].tolist()
@@ -302,52 +650,30 @@ elif st.session_state.page == "District Admin Dashboard":
 
     c1, c2, c3 = st.columns(3)
 
-    c1.metric(
-        "Employed Students",
-        int(selected_row["Employed Students"])
-    )
-
-    c2.metric(
-        "Unemployed Students",
-        int(selected_row["Unemployed Students"])
-    )
-
-    c3.metric(
-        "Job Openings",
-        int(selected_row["Job Openings"])
-    )
+    c1.metric("Employed Students", int(selected_row["Employed Students"]))
+    c2.metric("Unemployed Students", int(selected_row["Unemployed Students"]))
+    c3.metric("Job Openings", int(selected_row["Job Openings"]))
 
     st.divider()
 
-    # Pain 1: Growing sectors and skills
     st.subheader("1. Which Sectors and Skills Are Growing?")
 
     col1, col2 = st.columns(2)
 
     with col1:
         st.markdown("#### Skill-wise Demand")
-        st.bar_chart(
-            skill_demand.set_index("Skill")["Openings"]
-        )
+        st.bar_chart(skill_demand.set_index("Skill")["Openings"])
 
     with col2:
         st.markdown("#### Sector-wise Demand")
-        st.bar_chart(
-            sector_demand.set_index("Sector")["Openings"]
-        )
+        st.bar_chart(sector_demand.set_index("Sector")["Openings"])
 
-    # Pain 2: Employment and unemployment
     st.divider()
+
     st.subheader("2. Employed and Unemployed Students")
 
     st.dataframe(
-        district_data[
-            [
-                "District",
-                "Employed Students",
-                "Unemployed Students"
-            ]
-        ],
+        district_data[["District", "Employed Students", "Unemployed Students"]],
         use_container_width=True
     )
 
@@ -357,22 +683,15 @@ elif st.session_state.page == "District Admin Dashboard":
         ]
     )
 
-    # Pain 3: Openings by district
     st.divider()
+
     st.subheader("3. Job Openings — District-wise")
 
-    st.bar_chart(
-        district_data.set_index("District")["Job Openings"]
-    )
+    st.bar_chart(district_data.set_index("District")["Job Openings"])
 
-    # Pain 4: Hiring companies
     st.divider()
-    st.subheader("4. Hiring Companies")
 
-    st.write(
-        "This section will display company details, sectors, "
-        "skills required, vacancies and hiring activity."
-    )
+    st.subheader("4. Hiring Companies")
 
     hiring_companies = pd.DataFrame({
         "Company": [
@@ -380,11 +699,7 @@ elif st.session_state.page == "District Admin Dashboard":
             "Karnataka Manufacturing Ltd.",
             "Healthcare Services Ltd."
         ],
-        "Sector": [
-            "IT",
-            "Manufacturing",
-            "Healthcare"
-        ],
+        "Sector": ["IT", "Manufacturing", "Healthcare"],
         "Skill Required": [
             "Python and Data Analytics",
             "Welding and Electrical",
@@ -395,8 +710,8 @@ elif st.session_state.page == "District Admin Dashboard":
 
     st.dataframe(hiring_companies, use_container_width=True)
 
-    # Pain 5: Job fairs
     st.divider()
+
     st.subheader("5. Job Fair Performance")
 
     st.dataframe(job_fair_data, use_container_width=True)
@@ -407,35 +722,17 @@ elif st.session_state.page == "District Admin Dashboard":
 
     c1, c2, c3 = st.columns(3)
 
-    c1.metric(
-        "Job Fairs Conducted",
-        int(fair_row["Job Fairs Conducted"])
-    )
-
-    c2.metric(
-        "Students Participated",
-        int(fair_row["Students Participated"])
-    )
-
-    c3.metric(
-        "Students Placed",
-        int(fair_row["Students Placed"])
-    )
+    c1.metric("Job Fairs Conducted", int(fair_row["Job Fairs Conducted"]))
+    c2.metric("Students Participated", int(fair_row["Students Participated"]))
+    c3.metric("Students Placed", int(fair_row["Students Placed"]))
 
     c4, c5 = st.columns(2)
 
-    c4.metric(
-        "Companies Participated",
-        int(fair_row["Companies Participated"])
-    )
+    c4.metric("Companies Participated", int(fair_row["Companies Participated"]))
+    c5.metric("Companies That Hired", int(fair_row["Companies Hired"]))
 
-    c5.metric(
-        "Companies That Hired",
-        int(fair_row["Companies Hired"])
-    )
-
-    # Pain 6: Training institutes
     st.divider()
+
     st.subheader("6. Training Institute Performance")
 
     st.dataframe(institute_data, use_container_width=True)
@@ -446,8 +743,9 @@ elif st.session_state.page == "District Admin Dashboard":
         ]
     )
 
+
 # ==========================================
-# 10. STATE ADMIN
+# 11. STATE ADMIN
 # ==========================================
 
 elif st.session_state.page == "State Admin":
@@ -462,14 +760,16 @@ elif st.session_state.page == "State Admin":
     st.dataframe(district_data, use_container_width=True)
 
     st.subheader("Compare Districts")
+
     st.bar_chart(
         district_data.set_index("District")[
             ["Employed Students", "Unemployed Students", "Job Openings"]
         ]
     )
 
+
 # ==========================================
-# 11. TRAINING INSTITUTES
+# 12. TRAINING INSTITUTES
 # ==========================================
 
 elif st.session_state.page == "Training Institutes":
@@ -491,8 +791,9 @@ elif st.session_state.page == "Training Institutes":
         ]
     )
 
+
 # ==========================================
-# 12. JOB FAIR COMPANIES
+# 13. JOB FAIR COMPANIES
 # ==========================================
 
 elif st.session_state.page == "Job Fair Companies":
@@ -514,8 +815,9 @@ elif st.session_state.page == "Job Fair Companies":
         ]
     )
 
+
 # ==========================================
-# 13. ANALYTICS - AI SKILL PLANNING
+# 14. ANALYTICS - AI SKILL PLANNING
 # ==========================================
 
 elif st.session_state.page == "Analytics - AI Skill Planning":
@@ -523,8 +825,8 @@ elif st.session_state.page == "Analytics - AI Skill Planning":
     st.header("Analytics - AI Skill Planning")
 
     st.write(
-        "This module will help district administrators create "
-        "skill plans based on unemployment, skill gaps and demand."
+        "This module helps district administrators create skill plans "
+        "based on unemployment, skill gaps and demand."
     )
 
     st.subheader("Generate a Skill Planning Report")
@@ -554,14 +856,8 @@ elif st.session_state.page == "Analytics - AI Skill Planning":
 
         st.write(f"**District:** {district}")
         st.write(f"**Planning Focus:** {focus}")
-        st.write(
-            f"**Unemployed Students:** "
-            f"{int(row['Unemployed Students'])}"
-        )
-        st.write(
-            f"**Available Job Openings:** "
-            f"{int(row['Job Openings'])}"
-        )
+        st.write(f"**Unemployed Students:** {int(row['Unemployed Students'])}")
+        st.write(f"**Available Job Openings:** {int(row['Job Openings'])}")
 
         st.info(
             "This is a basic sample report generated from demo data. "
@@ -583,8 +879,17 @@ elif st.session_state.page == "Analytics - AI Skill Planning":
     - Sector Recommendations for Hiring
     """)
 
+
 # ==========================================
-# 14. PLANS
+# 15. AI CHART BOT
+# ==========================================
+
+elif st.session_state.page == "AI Chart Bot":
+    show_ai_chart_bot()
+
+
+# ==========================================
+# 16. PLANS
 # ==========================================
 
 elif st.session_state.page == "Plans":
@@ -601,8 +906,9 @@ elif st.session_state.page == "Plans":
         "will be implemented in the next step."
     )
 
+
 # ==========================================
-# 15. EXECUTED
+# 17. EXECUTED
 # ==========================================
 
 elif st.session_state.page == "Executed":
@@ -633,8 +939,9 @@ elif st.session_state.page == "Executed":
         "will be connected to saved plans later."
     )
 
+
 # ==========================================
-# 16. RESULTS
+# 18. RESULTS
 # ==========================================
 
 elif st.session_state.page == "Results":
@@ -650,9 +957,7 @@ elif st.session_state.page == "Results":
 
     with c1:
         st.subheader("Unemployment Trend")
-        st.write(
-            "Historical unemployment data will be displayed here."
-        )
+        st.write("Historical unemployment data will be displayed here.")
 
     with c2:
         st.subheader("Skill Gap Trend")
@@ -667,8 +972,9 @@ elif st.session_state.page == "Results":
         "and compare results over time."
     )
 
+
 # ==========================================
-# 17. FOOTER
+# 19. FOOTER
 # ==========================================
 
 st.divider()
