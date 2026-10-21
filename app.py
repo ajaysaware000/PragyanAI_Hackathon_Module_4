@@ -947,3 +947,112 @@ st.caption(
     "District Labour & Skill Intelligence Portal | "
     "Demonstration Version | Sample Data"
 )
+
+import streamlit as st
+
+# Page configuration must be the first Streamlit command
+st.set_page_config(
+    page_title="District Labour & Skill Portal",
+    page_icon="🏛️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Sidebar styling
+st.markdown("""
+<style>
+[data-testid="stSidebar"] {
+    background-color: #102D46;
+}
+
+[data-testid="stSidebar"] * {
+    color: #FFFFFF;
+}
+
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+    padding: 8px 10px;
+    border-radius: 7px;
+}
+
+[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+    background-color: #234D6B;
+}
+
+[data-testid="stSidebar"] button {
+    color: #FFFFFF;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# One navigation menu for the entire application
+PAGES = [
+    "Explore Dashboard",
+    "Users",
+    "District Admin Dashboard",
+    "State Admin",
+    "Training Institutes",
+    "Job Fair Companies",
+    "Analytics - AI Skill Planning",
+    "Plans",
+    "Executed",
+    "Results"
+]
+
+with st.sidebar:
+    st.title("🏛️ Skill Portal")
+    st.caption("LABOUR & SKILL ADMINISTRATION")
+    st.divider()
+
+    st.subheader("NAVIGATION")
+
+    page = st.radio(
+        "Select a page",
+        options=PAGES,
+        index=0,
+        key="main_navigation",
+        label_visibility="collapsed"
+    )
+
+    st.divider()
+
+    st.caption("District Labour & Skill Intelligence")
+
+if page == "Explore Dashboard":
+    st.title("Explore Dashboard")
+    # Keep your existing Explore Dashboard content here.
+
+elif page == "Users":
+    st.title("Users")
+    # Keep your existing Users content here.
+
+elif page == "District Admin Dashboard":
+    st.title("District Admin Dashboard")
+    # Keep your existing District Admin content here.
+
+elif page == "State Admin":
+    st.title("State Admin")
+    # Keep your existing State Admin content here.
+
+elif page == "Training Institutes":
+    st.title("Training Institutes")
+    # Keep your existing Training Institutes content here.
+
+elif page == "Job Fair Companies":
+    st.title("Job Fair Companies")
+    # Keep your existing Job Fair Companies content here.
+
+elif page == "Analytics - AI Skill Planning":
+    st.title("Analytics - AI Skill Planning")
+    # Keep your existing Analytics content here.
+
+elif page == "Plans":
+    st.title("Plans")
+    # Keep your existing Plans content here.
+
+elif page == "Executed":
+    st.title("Executed")
+    # Keep your existing Executed content here.
+
+elif page == "Results":
+    st.title("Results")
+    # Keep your existing Results content here.
