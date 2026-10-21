@@ -24,8 +24,75 @@ st.caption("Employment, skills, job demand, job fairs and training analysis")
 # 2. FILE PATHS
 # --------------------------------------------------
 
-DATA_FILE = "karnataka_district_skills.csv"
-USERS_FILE = "users.json"
+
+# Load the CSV file
+uploaded_file = st.sidebar.file_uploader(
+    "Upload your CSV file",
+    type=["csv"]
+)
+
+try:
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file, encoding="utf-8-sig")
+    elif os.path.exists("karnataka_district_skills.csv"):
+        df = pd.read_csv(
+            "karnataka_district_skills.csv",
+            encoding="utf-8-sig"
+        )
+    else:
+        st.error("Please upload your CSV file.")
+        st.stop()
+
+except Exception as error:
+    st.error(f"Unable to read CSV: {error}")
+    st.stop()
+
+
+# Clean column names
+df.columns = (
+    df.columns.astype(str)
+    .str.replace("\ufeff", "", regex=False)
+    .str.strip()
+)
+
+# Display columns for troubleshooting
+with st.expander("Debug: View CSV column names"):
+    st.write(df.columns.tolist())
+    st.dataframe(df.head(5), use_container_width=True)
+
+
+# Find the District column even if its capitalization differs
+district_column = next(
+    (
+        column for column in df.columns
+        if column.strip().casefold() == "district"
+    ),
+    None
+)
+
+if district_column is None:
+    st.error(
+        "The CSV must contain a District column. "
+        "Please check the column names displayed above."
+    )
+    st.stop()
+
+# Standardize the name for the rest of the app
+if district_column != "District":
+    df = df.rename(columns={district_column: "District"})
+
+# Remove rows where the district name is empty
+df["District"] = df["District"].astype("string").str.strip()
+
+df = df[
+    df["District"].notna()
+    & df["District"].ne("")
+]
+
+if df.empty:
+    st.error("The CSV has no valid district records.")
+    st.stop()
+
 
 
 # --------------------------------------------------
