@@ -1,144 +1,27 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from datetime import date
 
-# =====================================================
+# ==========================================
 # 1. PAGE CONFIGURATION
-# =====================================================
+# ==========================================
 
 st.set_page_config(
-    page_title="District Skill Intelligence Portal",
-    page_icon="🏛️",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="Labour & Skill Planning",
+    page_icon="🎯",
+    layout="wide"
 )
 
-# =====================================================
-# 2. CUSTOM DESIGN
-# =====================================================
-
-st.markdown("""
-<style>
-.stApp {
-    background-color: #F5F7FA;
-    color: #1F2937;
-}
-
-[data-testid="stSidebar"] {
-    background-color: #0F2D46;
-}
-
-[data-testid="stSidebar"] * {
-    color: #FFFFFF !important;
-}
-
-[data-testid="stSidebar"] .stCaption,
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p {
-    color: #FFFFFF !important;
-    font-weight: 500;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label,
-[data-testid="stSidebar"] [data-baseweb="select"] *,
-[data-testid="stSidebar"] [data-baseweb="popover"] * {
-    color: #FFFFFF !important;
-}
-
-.main-title {
-    font-size: 30px;
-    font-weight: 750;
-    color: #0F2A43;
-}
-
-.subtitle {
-    color: #4B5A6B;
-    font-size: 14px;
-}
-
-.section-title {
-    font-size: 21px;
-    font-weight: 700;
-    color: #123B5D;
-}
-
-.kpi {
-    background: #FFFFFF;
-    border: 1px solid #D8E0EA;
-    border-radius: 12px;
-    padding: 18px;
-    min-height: 120px;
-    color: #1F2937;
-}
-
-.kpi-label {
-    color: #55677A;
-    font-size: 13px;
-}
-
-.kpi-value {
-    color: #0F2A43;
-    font-size: 28px;
-    font-weight: 750;
-}
-
-.kpi-note {
-    color: #1F7A4D;
-    font-size: 12px;
-}
-
-div[data-testid="stMetric"] {
-    background: #FFFFFF;
-    padding: 15px;
-    border: 1px solid #D8E0EA;
-    border-radius: 12px;
-    color: #1F2937;
-}
-
-div[data-testid="stMetricLabel"] p {
-    color: #55677A !important;
-}
-
-div[data-testid="stMetricValue"] {
-    color: #0F2A43 !important;
-}
-
-[data-testid="stDataFrame"],
-[data-testid="stDataFrame"] * {
-    color: #1F2937 !important;
-}
-
-.stCaption,
-[data-testid="stCaptionContainer"] {
-    color: #4B5A6B !important;
-}
-
-.stButton button {
-    border-radius: 8px;
-    background-color: #1F6FEB;
-    color: #FFFFFF;
-    border: none;
-}
-
-.stButton button:hover {
-    background-color: #1858C4;
-    color: #FFFFFF;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# =====================================================
-# 3. LOAD AND CLEAN CSV
-# =====================================================
+# ==========================================
+# 2. LOAD DISTRICT_SKILLS CSV
+# ==========================================
 
 CSV_FILE = "district_skills.csv"
 
 try:
     skill_data = None
 
-    # Automatically try comma, semicolon and tab separators
+    # Try comma, semicolon and tab separators automatically
     for separator in [",", ";", "\t"]:
         try:
             temp_df = pd.read_csv(
@@ -173,12 +56,12 @@ try:
         .str.replace("-", "_")
     )
 
-    # Show detected columns in sidebar for troubleshooting
+    # Show detected columns in sidebar
     with st.sidebar:
         st.caption("CSV columns detected:")
         st.write(", ".join(skill_data.columns))
 
-    # Map common alternative column names
+    # Rename common alternative column names
     column_aliases = {
         "district_name": "district",
         "districts": "district",
@@ -206,7 +89,7 @@ try:
         "period", "source"
     ]
 
-    # Create missing columns automatically
+    # Create missing columns with demo defaults
     defaults = {
         "district": "Unknown District",
         "sector": "General",
@@ -234,11 +117,7 @@ try:
 
     # Clean text columns
     for column in ["district", "sector", "skill", "period", "source"]:
-        skill_data[column] = (
-            skill_data[column]
-            .astype(str)
-            .str.strip()
-        )
+        skill_data[column] = skill_data[column].astype(str).str.strip()
 
     # Clean numeric columns
     numeric_columns = [
@@ -262,10 +141,39 @@ except FileNotFoundError:
     )
     st.stop()
 
-# =====================================================
-# 4. CREATE SUMMARY DATA FROM CSV
-# =====================================================
+# ==========================================
+# 3. CREATE DATA FROM CSV
+# ==========================================
 
+np.random.seed(42)
+
+# Skill demand
+skill_demand = (
+    skill_data
+    .groupby("skill", as_index=False)["demand_score"]
+    .mean()
+    .round(1)
+    .rename(columns={
+        "skill": "Skill",
+        "demand_score": "Demand Score"
+    })
+    .sort_values("Demand Score", ascending=False)
+)
+
+# Sector demand
+sector_demand = (
+    skill_data
+    .groupby("sector", as_index=False)["demand_score"]
+    .mean()
+    .round(1)
+    .rename(columns={
+        "sector": "Sector",
+        "demand_score": "Demand Score"
+    })
+    .sort_values("Demand Score", ascending=False)
+)
+
+# District summary
 district_summary = (
     skill_data
     .groupby("district", as_index=False)
@@ -288,133 +196,26 @@ district_summary = district_summary.rename(columns={
     "Skill_Records": "Skill Records"
 })
 
-sector_summary = (
-    skill_data
-    .groupby("sector", as_index=False)
-    .agg(
-        Average_Demand=("demand_score", "mean"),
-        Average_Gap=("gap_score", "mean"),
-        Average_Training_Access=("training_access", "mean"),
-        Average_Momentum=("momentum", "mean")
-    )
-    .round(1)
-)
-
-sector_summary = sector_summary.rename(columns={
-    "sector": "Sector",
-    "Average_Demand": "Average Demand Score",
-    "Average_Gap": "Average Skill Gap",
-    "Average_Training_Access": "Average Training Access",
-    "Average_Momentum": "Average Momentum"
-})
-
-skill_summary = (
-    skill_data
-    .groupby(["sector", "skill"], as_index=False)
-    .agg(
-        Average_Demand=("demand_score", "mean"),
-        Average_Gap=("gap_score", "mean"),
-        Average_Training_Access=("training_access", "mean"),
-        Average_Momentum=("momentum", "mean")
-    )
-    .round(1)
-)
-
-skill_summary = skill_summary.rename(columns={
-    "sector": "Sector",
-    "skill": "Skill",
-    "Average_Demand": "Average Demand Score",
-    "Average_Gap": "Average Skill Gap",
-    "Average_Training_Access": "Average Training Access",
-    "Average_Momentum": "Average Momentum"
-})
-
-# Simulated district employment indicators
-district_employment = district_summary.copy()
-district_employment["Employed"] = (
-    district_employment["Average Demand Score"] * 80
+# Simulated employment data based on CSV scores
+district_data = district_summary.copy()
+district_data["Employed Students"] = (
+    district_data["Average Demand Score"] * 15
 ).astype(int)
 
-district_employment["Unemployed"] = (
-    district_employment["Average Skill Gap"] * 45
+district_data["Unemployed Students"] = (
+    district_data["Average Skill Gap"] * 8
 ).astype(int)
 
-district_employment["Job Openings"] = (
-    district_employment["Average Demand Score"] * 35
+district_data["Job Openings"] = (
+    district_data["Average Demand Score"] * 7
 ).astype(int)
 
-district_employment["Training Enrolment"] = (
-    district_employment["Average Training Access"] * 25
-).astype(int)
-
-district_employment = district_employment[[
-    "District", "Employed", "Unemployed",
-    "Job Openings", "Training Enrolment"
+district_data = district_data[[
+    "District",
+    "Employed Students",
+    "Unemployed Students",
+    "Job Openings"
 ]]
-
-# Simulated training institute data
-institute_templates = [
-    "District Skill Centre",
-    "Government ITI",
-    "Technical Training Institute",
-    "Advanced Skills Academy",
-    "Community Training Centre"
-]
-
-np.random.seed(42)
-
-institute_rows = []
-
-for index, row in district_summary.iterrows():
-    district = row["District"]
-    base_enrolment = int(row["Average Training Access"] * 8) + 100
-
-    for institute in institute_templates:
-        enrolled = max(
-            50,
-            base_enrolment + np.random.randint(-30, 50)
-        )
-        skilled = int(enrolled * np.random.uniform(0.60, 0.90))
-        placed = int(skilled * np.random.uniform(0.45, 0.85))
-
-        institute_rows.append({
-            "Institute": institute,
-            "District": district,
-            "Enrolled": enrolled,
-            "Skilled": skilled,
-            "Placed": placed
-        })
-
-institutes = pd.DataFrame(institute_rows)
-
-# Simulated company data
-company_templates = [
-    "ABC Technologies",
-    "Digital Solutions Pvt Ltd",
-    "Karnataka Manufacturing Ltd.",
-    "Precision Engineering Works",
-    "HealthFirst Services",
-    "SolarWorks India"
-]
-
-company_rows = []
-
-for index, row in skill_data.iterrows():
-    company_rows.append({
-        "Company": np.random.choice(company_templates),
-        "Sector": row["sector"],
-        "District": row["district"],
-        "Skill Required": row["skill"],
-        "Vacancies": int(
-            row["demand_score"] * np.random.uniform(0.15, 0.45)
-        ),
-        "Participated in Job Fair": np.random.choice(["Yes", "No"]),
-        "Students Hired": int(
-            row["demand_score"] * np.random.uniform(0.05, 0.25)
-        )
-    })
-
-companies = pd.DataFrame(company_rows)
 
 # Simulated job fair data
 job_fair_rows = []
@@ -436,717 +237,673 @@ for index, row in district_summary.iterrows():
 
     job_fair_rows.append({
         "District": district,
-        "Fairs Conducted": fairs,
+        "Job Fairs Conducted": fairs,
         "Students Participated": students_participated,
         "Students Placed": students_placed,
         "Companies Participated": companies_participated,
         "Companies Hired": companies_hired
     })
 
-job_fairs = pd.DataFrame(job_fair_rows)
+job_fair_data = pd.DataFrame(job_fair_rows)
 
-# =====================================================
-# 5. SESSION STATE
-# =====================================================
+# Simulated institute data
+institute_templates = [
+    "Government Skill Centre",
+    "District Training Institute",
+    "Technical Training Centre"
+]
 
-defaults = {
-    "logged_in": False,
-    "username": "",
-    "role": "District Admin - Labour & Skill",
-    "users": {},
-    "plans": [],
-    "executions": [],
-    "activities": []
-}
+institute_rows = []
 
-for key, value in defaults.items():
-    if key not in st.session_state:
-        st.session_state[key] = value
+for index, row in district_summary.iterrows():
+    district = row["District"]
+    base_enrolment = int(row["Average Training Access"] * 5) + 80
 
-# =====================================================
-# 6. LOGIN AND REGISTRATION
-# =====================================================
+    for institute in institute_templates:
+        enrolled = max(
+            50,
+            base_enrolment + np.random.randint(-20, 40)
+        )
+        skilled = int(enrolled * np.random.uniform(0.60, 0.90))
+        placed = int(skilled * np.random.uniform(0.45, 0.85))
+
+        institute_rows.append({
+            "Institute": institute,
+            "District": district,
+            "Students Enrolled": enrolled,
+            "Students Skilled": skilled,
+            "Students Placed": placed
+        })
+
+institute_data = pd.DataFrame(institute_rows)
+
+# Simulated hiring companies
+company_templates = [
+    "ABC Technologies",
+    "Digital Solutions Pvt Ltd",
+    "Karnataka Manufacturing Ltd.",
+    "Precision Engineering Works",
+    "HealthFirst Services",
+    "SolarWorks India"
+]
+
+hiring_companies = (
+    skill_data
+    .groupby(["district", "sector", "skill"], as_index=False)
+    .agg(
+        Average_Demand=("demand_score", "mean"),
+        Average_Gap=("gap_score", "mean")
+    )
+    .round(1)
+)
+
+hiring_companies["Company"] = np.random.choice(
+    company_templates,
+    size=len(hiring_companies)
+)
+
+hiring_companies["Openings"] = (
+    hiring_companies["Average_Demand"] * np.random.uniform(0.2, 0.6, len(hiring_companies))
+).astype(int)
+
+hiring_companies = hiring_companies.rename(columns={
+    "district": "District",
+    "sector": "Sector",
+    "skill": "Skill Required",
+    "Average_Demand": "Average Demand Score",
+    "Average_Gap": "Average Skill Gap"
+})
+
+hiring_companies = hiring_companies[[
+    "Company", "District", "Sector",
+    "Skill Required", "Openings",
+    "Average Demand Score", "Average Skill Gap"
+]]
+
+# ==========================================
+# 4. SESSION STATE
+# ==========================================
+
+if "users" not in st.session_state:
+    st.session_state.users = {}
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+if "page" not in st.session_state:
+    st.session_state.page = "Explore Dashboard"
+
+if "plans" not in st.session_state:
+    st.session_state.plans = []
+
+if "executions" not in st.session_state:
+    st.session_state.executions = []
+
+# ==========================================
+# 5. APPLICATION HEADER
+# ==========================================
+
+st.title("🎯 Labour & Skill Planning System")
+st.caption(
+    "District-level employment, skill demand and training planning "
+    "powered by district_skills.csv"
+)
+
+# ==========================================
+# 6. REGISTER AND LOGIN
+# ==========================================
 
 if not st.session_state.logged_in:
 
-    st.markdown(
-        '<div class="main-title">District Skill Intelligence Portal</div>',
-        unsafe_allow_html=True
-    )
-    st.write("Labour, Employment and Skill Development Administration")
-    st.divider()
-
-    login_tab, register_tab = st.tabs(["Login", "Create Account"])
+    login_tab, register_tab = st.tabs(["Login", "Register"])
 
     with register_tab:
-        st.subheader("Create your account")
+        st.subheader("Create an Account")
 
-        reg_name = st.text_input("Username", key="reg_name")
-        reg_password = st.text_input(
-            "Password", type="password", key="reg_password"
+        new_username = st.text_input(
+            "Username",
+            key="register_username"
         )
-        reg_role = st.selectbox(
-            "Select role",
+
+        new_password = st.text_input(
+            "Password",
+            type="password",
+            key="register_password"
+        )
+
+        role = st.selectbox(
+            "Select Role",
             [
                 "District Admin - Labour & Skill",
                 "State Admin - Labour & Skill",
                 "Training Institute",
                 "Job Fair Company"
-            ],
-            key="reg_role"
+            ]
         )
 
-        if st.button("Register", key="register_button"):
-            if not reg_name.strip() or not reg_password:
-                st.error("Enter a username and password.")
-            elif reg_name in st.session_state.users:
-                st.error("Username already exists.")
+        if st.button("Register", use_container_width=True):
+            if not new_username.strip() or not new_password:
+                st.error("Please enter a username and password.")
+
+            elif new_username in st.session_state.users:
+                st.error("This username already exists.")
+
             else:
-                st.session_state.users[reg_name] = {
-                    "password": reg_password,
-                    "role": reg_role
+                st.session_state.users[new_username] = {
+                    "password": new_password,
+                    "role": role
                 }
-                st.success("Account created. Please open the Login tab.")
+
+                st.success("Registration successful. Open the Login tab.")
 
     with login_tab:
-        st.subheader("Sign in")
+        st.subheader("Login to Your Account")
 
-        login_name = st.text_input("Username", key="login_name")
-        login_password = st.text_input(
-            "Password", type="password", key="login_password"
+        username = st.text_input(
+            "Username",
+            key="login_username"
         )
 
-        if st.button("Login", key="login_button"):
-            account = st.session_state.users.get(login_name)
+        password = st.text_input(
+            "Password",
+            type="password",
+            key="login_password"
+        )
 
-            if account and account["password"] == login_password:
+        if st.button("Login", use_container_width=True):
+            user = st.session_state.users.get(username)
+
+            if user and user["password"] == password:
                 st.session_state.logged_in = True
-                st.session_state.username = login_name
-                st.session_state.role = account["role"]
+                st.session_state.username = username
+                st.session_state.page = "Explore Dashboard"
                 st.rerun()
+
             else:
                 st.error(
-                    "Account not found or password incorrect. "
-                    "Register first if needed."
+                    "Invalid username or password. "
+                    "Register first if you do not have an account."
                 )
 
     st.info(
-        "Demo version: accounts are stored only in the current session. "
-        "A production portal needs secure authentication and a database."
+        "This is a demonstration login. Accounts exist only during "
+        "the current Streamlit session. Production use requires "
+        "secure password hashing and a persistent database."
     )
+
     st.stop()
 
-# =====================================================
+# ==========================================
 # 7. SIDEBAR NAVIGATION
-# =====================================================
+# ==========================================
 
-with st.sidebar:
-    st.markdown("## 🏛️ SKILL INTELLIGENCE")
-    st.caption("LABOUR & SKILL PORTAL")
-    st.divider()
+user = st.session_state.users[st.session_state.username]
 
-    st.write("SIGNED IN AS")
-    st.markdown(f"**{st.session_state.username}**")
-    st.caption(st.session_state.role)
+st.sidebar.title("Navigation")
+st.sidebar.write(f"**User:** {st.session_state.username}")
+st.sidebar.write(f"**Role:** {user['role']}")
 
-    st.divider()
+pages = [
+    "Explore Dashboard",
+    "Users",
+    "District Admin Dashboard",
+    "State Admin",
+    "Training Institutes",
+    "Job Fair Companies",
+    "Analytics - AI Skill Planning",
+    "Plans",
+    "Executed",
+    "Results"
+]
 
-    page = st.selectbox(
-        "Open page",
-        [
-            "Explore Dashboard",
-            "Users",
-            "District Admin Dashboard",
-            "State Admin",
-            "Training Institutes",
-            "Job Fair Companies",
-            "Analytics - AI Skill Planning",
-            "Plans",
-            "Executed",
-            "Results"
-        ],
-        key="selected_page"
-    )
-
-    st.divider()
-
-    if st.button("Logout", use_container_width=True):
-        st.session_state.logged_in = False
-        st.session_state.username = ""
-        st.rerun()
-
-# =====================================================
-# 8. SHARED HEADER AND HELPERS
-# =====================================================
-
-st.markdown(
-    '<div class="main-title">District Labour & Skill Intelligence</div>',
-    unsafe_allow_html=True
+st.session_state.page = st.sidebar.radio(
+    "Select a Page",
+    pages,
+    index=pages.index(st.session_state.page)
 )
 
-st.markdown(
-    '<div class="subtitle">Employment monitoring • Skill-gap analysis • '
-    'Training coordination • Outcome tracking</div>',
-    unsafe_allow_html=True
-)
+if st.sidebar.button("Logout", use_container_width=True):
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.rerun()
 
-st.caption(
-    f"Signed in as {st.session_state.username} | "
-    f"{st.session_state.role} | "
-    f"{date.today().strftime('%d %b %Y')}"
-)
+# ==========================================
+# 8. EXPLORE DASHBOARD
+# ==========================================
 
-st.divider()
+if st.session_state.page == "Explore Dashboard":
 
-
-def kpi(label, value, note="Generated from district_skills.csv"):
-    st.markdown(
-        f"""
-        <div class="kpi">
-            <div class="kpi-label">{label}</div>
-            <div class="kpi-value">{value}</div>
-            <div class="kpi-note">{note}</div>
-        </div>
-        """,
-        unsafe_allow_html=True
+    st.header("Phase 1: Explore")
+    st.write(
+        "Explore users, districts, sectors and skills using your "
+        "district_skills.csv dataset."
     )
 
+    col1, col2, col3, col4 = st.columns(4)
 
-def page_title(title, description):
-    st.markdown(
-        f'<div class="section-title">{title}</div>',
-        unsafe_allow_html=True
-    )
-    st.caption(description)
+    col1.metric("User Groups", "4")
+    col2.metric("Districts", skill_data["district"].nunique())
+    col3.metric("Skills", skill_data["skill"].nunique())
+    col4.metric("Sectors", skill_data["sector"].nunique())
 
-# =====================================================
-# 9. EXPLORE DASHBOARD
-# =====================================================
+    st.divider()
 
-if page == "Explore Dashboard":
+    st.subheader("Explore User Groups")
 
-    page_title(
-        "Explore Dashboard",
-        "Overview generated from your district_skills.csv dataset."
-    )
+    c1, c2 = st.columns(2)
 
-    total_records = len(skill_data)
-    total_districts = skill_data["district"].nunique()
-    total_skills = skill_data["skill"].nunique()
-    average_gap = round(skill_data["gap_score"].mean(), 1)
-
-    a, b, c, d = st.columns(4)
-
-    with a:
-        kpi("CSV Records", f"{total_records:,}")
-
-    with b:
-        kpi("Districts Covered", total_districts)
-
-    with c:
-        kpi("Unique Skills", total_skills)
-
-    with d:
-        kpi("Average Skill Gap", average_gap)
-
-    st.write("")
-
-    left, right = st.columns([1.5, 1])
-
-    with left:
-        st.subheader("Average Demand and Skill Gap by District")
-
-        district_chart = district_summary.set_index("District")[
-            ["Average Demand Score", "Average Skill Gap"]
-        ]
-
-        st.bar_chart(district_chart)
-
-    with right:
-        st.subheader("Top Skills by Demand")
-
-        top_skills = (
-            skill_summary
-            .sort_values("Average Demand Score", ascending=False)
-            .head(10)
+    with c1:
+        st.markdown("### 🏢 District Admin")
+        st.write(
+            "Monitor employment, unemployment, skill demand, "
+            "job openings, job fairs and training institutes."
         )
 
-        st.bar_chart(
-            top_skills.set_index("Skill")["Average Demand Score"]
+        st.markdown("### 🏛️ State Admin")
+        st.write(
+            "Review district-level information and compare "
+            "skill and employment trends across districts."
         )
 
-    st.subheader("District Summary")
-    st.dataframe(
-        district_summary,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.subheader("Raw CSV Records")
-    st.dataframe(
-        skill_data,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.subheader("Recent Portal Activity")
-
-    if st.session_state.activities:
-        st.dataframe(
-            pd.DataFrame(st.session_state.activities),
-            use_container_width=True,
-            hide_index=True
-        )
-    else:
-        st.info(
-            "No activities recorded yet. Saved plans and execution updates "
-            "will appear here."
+    with c2:
+        st.markdown("### 🎓 Training Institutes")
+        st.write(
+            "Track student enrolment, skill training and "
+            "student placement outcomes."
         )
 
-# =====================================================
-# 10. USERS
-# =====================================================
-
-elif page == "Users":
-
-    page_title(
-        "Users & Access",
-        "Review registered demo accounts and their assigned roles."
-    )
-
-    if st.session_state.users:
-        user_rows = [
-            {
-                "Username": name,
-                "Role": details["role"],
-                "Account Status": "Registered"
-            }
-            for name, details in st.session_state.users.items()
-        ]
-
-        st.dataframe(
-            pd.DataFrame(user_rows),
-            use_container_width=True,
-            hide_index=True
+        st.markdown("### 🤝 Job Fair Companies")
+        st.write(
+            "Explore job fair participation, hiring activity "
+            "and employment opportunities."
         )
-    else:
-        st.info("No registered accounts found in this session.")
 
-    st.subheader("Role Responsibilities")
+    st.divider()
 
-    roles = pd.DataFrame({
-        "Role": [
+    st.subheader("District Overview")
+    st.dataframe(district_data, use_container_width=True)
+
+    st.subheader("CSV Data Preview")
+    st.dataframe(skill_data, use_container_width=True)
+
+# ==========================================
+# 9. USERS PAGE
+# ==========================================
+
+elif st.session_state.page == "Users":
+
+    st.header("Users")
+
+    user_groups = pd.DataFrame({
+        "User Group": [
             "District Admin - Labour & Skill",
             "State Admin - Labour & Skill",
-            "Training Institute",
-            "Job Fair Company"
+            "Training Institutes",
+            "Job Fair Companies"
         ],
-        "Responsibility": [
-            "Monitor district demand and coordinate skill plans",
-            "Compare districts and review state-wide progress",
-            "Track training, completion and placements",
-            "Share vacancies and report hiring outcomes"
+        "Main Responsibility": [
+            "District skill and employment planning",
+            "State-level monitoring and coordination",
+            "Student training and placement",
+            "Recruitment and hiring"
         ]
     })
 
-    st.dataframe(roles, use_container_width=True, hide_index=True)
+    st.dataframe(user_groups, use_container_width=True)
 
-    st.warning(
-        "This is not a secure user-management system. Role-based permissions "
-        "and database-backed accounts must be added before deployment."
-    )
+    if st.session_state.users:
+        st.subheader("Registered Users")
 
-# =====================================================
-# 11. DISTRICT ADMIN DASHBOARD
-# =====================================================
+        registered_users = pd.DataFrame([
+            {
+                "Username": name,
+                "Role": details["role"]
+            }
+            for name, details in st.session_state.users.items()
+        ])
 
-elif page == "District Admin Dashboard":
+        st.dataframe(registered_users, use_container_width=True)
+    else:
+        st.info("No users registered in this session.")
 
-    page_title(
-        "District Admin Dashboard",
-        "Monitor district skill demand, gaps and training access."
+# ==========================================
+# 10. DISTRICT ADMIN DASHBOARD
+# ==========================================
+
+elif st.session_state.page == "District Admin Dashboard":
+
+    st.header("District Admin - Labour & Skill")
+    st.write(
+        "Understand district-level employment, skill demand, "
+        "job openings, hiring companies and training outcomes."
     )
 
     selected_district = st.selectbox(
-        "Select district",
+        "Select District",
         sorted(skill_data["district"].unique())
     )
 
-    district_data = skill_data[
+    district_records = skill_data[
         skill_data["district"] == selected_district
     ]
 
-    district_metrics = district_summary[
-        district_summary["District"] == selected_district
+    district_row = district_data[
+        district_data["District"] == selected_district
     ].iloc[0]
 
-    employment_row = district_employment[
-        district_employment["District"] == selected_district
+    fair_row = job_fair_data[
+        job_fair_data["District"] == selected_district
     ].iloc[0]
 
-    fair_row = job_fairs[
-        job_fairs["District"] == selected_district
-    ].iloc[0]
+    st.subheader("Employment and Job Openings")
 
-    a, b, c, d = st.columns(4)
+    c1, c2, c3 = st.columns(3)
 
-    with a:
-        kpi(
-            "Average Demand Score",
-            district_metrics["Average Demand Score"]
-        )
-
-    with b:
-        kpi(
-            "Average Skill Gap",
-            district_metrics["Average Skill Gap"]
-        )
-
-    with c:
-        kpi(
-            "Average Training Access",
-            district_metrics["Average Training Access"]
-        )
-
-    with d:
-        kpi(
-            "Average Momentum",
-            district_metrics["Average Momentum"]
-        )
-
-    st.subheader("Skill-wise Performance")
-
-    skill_filter = st.multiselect(
-        "Filter skills",
-        sorted(district_data["skill"].unique()),
-        default=sorted(district_data["skill"].unique())
+    c1.metric(
+        "Employed Students",
+        int(district_row["Employed Students"])
     )
 
-    filtered_district_data = district_data[
-        district_data["skill"].isin(skill_filter)
-    ]
+    c2.metric(
+        "Unemployed Students",
+        int(district_row["Unemployed Students"])
+    )
 
-    if filtered_district_data.empty:
-        st.info("No matching skill records found.")
-    else:
-        skill_chart = (
-            filtered_district_data
-            .groupby("skill", as_index=False)[
-                [
-                    "demand_score", "gap_score",
-                    "training_access", "momentum"
-                ]
-            ]
+    c3.metric(
+        "Job Openings",
+        int(district_row["Job Openings"])
+    )
+
+    st.divider()
+
+    st.subheader("1. Which Sectors and Skills Are Growing?")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("#### Skill-wise Demand")
+
+        district_skill_demand = (
+            district_records
+            .groupby("skill", as_index=False)["demand_score"]
             .mean()
             .round(1)
             .set_index("skill")
         )
 
-        st.bar_chart(skill_chart)
+        st.bar_chart(district_skill_demand["demand_score"])
 
-        st.dataframe(
-            filtered_district_data,
-            use_container_width=True,
-            hide_index=True
+    with col2:
+        st.markdown("#### Sector-wise Demand")
+
+        district_sector_demand = (
+            district_records
+            .groupby("sector", as_index=False)["demand_score"]
+            .mean()
+            .round(1)
+            .set_index("sector")
         )
 
-    st.subheader("Sector-wise Demand")
+        st.bar_chart(district_sector_demand["demand_score"])
 
-    district_sector_summary = (
-        district_data
-        .groupby("sector", as_index=False)["demand_score"]
-        .mean()
-        .round(1)
-        .sort_values("demand_score", ascending=False)
-    )
+    st.divider()
+
+    st.subheader("2. Employed and Unemployed Students")
 
     st.bar_chart(
-        district_sector_summary.set_index("sector")["demand_score"]
-    )
-
-    st.subheader("Employment and Training Indicators")
-
-    a, b, c, d = st.columns(4)
-
-    with a:
-        kpi("Employed", f"{employment_row['Employed']:,}")
-
-    with b:
-        kpi("Unemployed", f"{employment_row['Unemployed']:,}")
-
-    with c:
-        kpi("Job Openings", f"{employment_row['Job Openings']:,}")
-
-    with d:
-        kpi(
-            "Training Enrolment",
-            f"{employment_row['Training Enrolment']:,}"
-        )
-
-    st.subheader("Job Fair Outcomes")
-
-    a, b, c = st.columns(3)
-
-    with a:
-        kpi("Fairs Conducted", int(fair_row["Fairs Conducted"]))
-
-    with b:
-        kpi(
-            "Students Participated",
-            f"{int(fair_row['Students Participated']):,}"
-        )
-
-    with c:
-        kpi(
-            "Students Placed",
-            f"{int(fair_row['Students Placed']):,}"
-        )
-
-    st.subheader("Companies and Openings")
-
-    district_companies = companies[
-        companies["District"] == selected_district
-    ]
-
-    st.dataframe(
-        district_companies,
-        use_container_width=True,
-        hide_index=True
-    )
-
-# =====================================================
-# 12. STATE ADMIN
-# =====================================================
-
-elif page == "State Admin":
-
-    page_title(
-        "State Admin",
-        "Compare districts and identify priority areas."
-    )
-
-    a, b, c = st.columns(3)
-
-    with a:
-        kpi("Districts Monitored", skill_data["district"].nunique())
-
-    with b:
-        kpi(
-            "Highest Average Gap",
-            district_summary["Average Skill Gap"].max()
-        )
-
-    with c:
-        kpi(
-            "Lowest Training Access",
-            district_summary["Average Training Access"].min()
-        )
-
-    st.subheader("Compare Districts")
-
-    indicator = st.selectbox(
-        "Choose indicator",
-        [
-            "Average Demand Score",
-            "Average Skill Gap",
-            "Average Training Access",
-            "Average Momentum"
+        district_data.set_index("District")[
+            ["Employed Students", "Unemployed Students"]
         ]
     )
 
-    comparison = district_summary.sort_values(
-        indicator, ascending=False
+    st.dataframe(
+        district_data[
+            [
+                "District",
+                "Employed Students",
+                "Unemployed Students"
+            ]
+        ],
+        use_container_width=True
     )
 
-    st.bar_chart(comparison.set_index("District")[indicator])
-    st.dataframe(comparison, use_container_width=True, hide_index=True)
+    st.divider()
+
+    st.subheader("3. Job Openings — District-wise")
+
+    st.bar_chart(
+        district_data.set_index("District")["Job Openings"]
+    )
+
+    st.divider()
+
+    st.subheader("4. Hiring Companies")
+
+    district_companies = hiring_companies[
+        hiring_companies["District"] == selected_district
+    ]
+
+    st.dataframe(district_companies, use_container_width=True)
+
+    st.divider()
+
+    st.subheader("5. Job Fair Performance")
+
+    st.dataframe(job_fair_data, use_container_width=True)
+
+    c1, c2, c3 = st.columns(3)
+
+    c1.metric(
+        "Job Fairs Conducted",
+        int(fair_row["Job Fairs Conducted"])
+    )
+
+    c2.metric(
+        "Students Participated",
+        int(fair_row["Students Participated"])
+    )
+
+    c3.metric(
+        "Students Placed",
+        int(fair_row["Students Placed"])
+    )
+
+    c4, c5 = st.columns(2)
+
+    c4.metric(
+        "Companies Participated",
+        int(fair_row["Companies Participated"])
+    )
+
+    c5.metric(
+        "Companies That Hired",
+        int(fair_row["Companies Hired"])
+    )
+
+    st.divider()
+
+    st.subheader("6. Training Institute Performance")
+
+    district_institutes = institute_data[
+        institute_data["District"] == selected_district
+    ]
+
+    st.dataframe(district_institutes, use_container_width=True)
+
+    st.bar_chart(
+        district_institutes.set_index("Institute")[
+            ["Students Enrolled", "Students Skilled", "Students Placed"]
+        ]
+    )
+
+# ==========================================
+# 11. STATE ADMIN
+# ==========================================
+
+elif st.session_state.page == "State Admin":
+
+    st.header("State Admin - Labour & Skill")
+
+    st.write(
+        "State-level view of district employment, unemployment "
+        "and job openings."
+    )
+
+    st.dataframe(district_data, use_container_width=True)
+
+    st.subheader("Compare Districts")
+
+    st.bar_chart(
+        district_data.set_index("District")[
+            ["Employed Students", "Unemployed Students", "Job Openings"]
+        ]
+    )
+
+    st.subheader("District Skill Indicators")
+
+    st.dataframe(district_summary, use_container_width=True)
 
     st.subheader("Districts Requiring Attention")
 
-    priority = district_summary.sort_values(
-        "Average Skill Gap", ascending=False
+    priority_districts = district_summary.sort_values(
+        "Average Skill Gap",
+        ascending=False
     ).head(3)
 
-    st.dataframe(
-        priority[
-            [
-                "District", "Average Skill Gap",
-                "Average Training Access", "Average Momentum"
-            ]
-        ],
-        use_container_width=True,
-        hide_index=True
-    )
+    st.dataframe(priority_districts, use_container_width=True)
 
-    st.caption(
-        "Priority is calculated from the gap score in district_skills.csv. "
-        "Use validated administrative data before making policy decisions."
-    )
+# ==========================================
+# 12. TRAINING INSTITUTES
+# ==========================================
 
-# =====================================================
-# 13. TRAINING INSTITUTES
-# =====================================================
+elif st.session_state.page == "Training Institutes":
 
-elif page == "Training Institutes":
+    st.header("Training Institutes")
 
-    page_title(
-        "Training Institutes",
-        "Monitor enrolment, skill completion and placement outcomes."
+    st.write(
+        "Track student enrolment, students who complete training, "
+        "and students who get placed."
     )
 
     selected_district = st.selectbox(
-        "Filter district",
-        ["All Districts"] + sorted(skill_data["district"].unique())
+        "Filter District",
+        ["All Districts"] + sorted(skill_data["district"].unique()),
+        key="institute_district"
     )
 
-    institute_view = institutes.copy()
+    institute_view = institute_data.copy()
 
     if selected_district != "All Districts":
         institute_view = institute_view[
             institute_view["District"] == selected_district
         ]
 
-    total_enrolled = institute_view["Enrolled"].sum()
-    total_skilled = institute_view["Skilled"].sum()
-    total_placed = institute_view["Placed"].sum()
+    st.dataframe(institute_view, use_container_width=True)
 
-    a, b, c = st.columns(3)
-
-    with a:
-        kpi("Students Enrolled", f"{total_enrolled:,}")
-
-    with b:
-        kpi("Students Skilled", f"{total_skilled:,}")
-
-    with c:
-        kpi("Students Placed", f"{total_placed:,}")
-
-    if total_enrolled:
-        st.metric(
-            "Placement as % of Enrolment",
-            f"{100 * total_placed / total_enrolled:.1f}%"
-        )
-
-    st.subheader("Institute Performance")
-    st.dataframe(institute_view, use_container_width=True, hide_index=True)
+    st.subheader("Student Training Outcomes")
 
     st.bar_chart(
         institute_view.set_index("Institute")[
-            ["Enrolled", "Skilled", "Placed"]
+            ["Students Enrolled", "Students Skilled", "Students Placed"]
         ]
     )
 
-    st.subheader("Training Institute Rankings")
+    st.subheader("Placement Rate")
 
-    ranked = institute_view.copy()
-    ranked["Placement Rate (%)"] = (
-        100 * ranked["Placed"] / ranked["Enrolled"]
+    institute_view["Placement Rate (%)"] = (
+        100 * institute_view["Students Placed"]
+        / institute_view["Students Enrolled"]
     ).round(1)
 
-    ranked = ranked.sort_values(
-        "Placement Rate (%)", ascending=False
-    )
-    ranked.insert(0, "Rank", range(1, len(ranked) + 1))
-
-    st.dataframe(ranked, use_container_width=True, hide_index=True)
-
-# =====================================================
-# 14. JOB FAIR COMPANIES
-# =====================================================
-
-elif page == "Job Fair Companies":
-
-    page_title(
-        "Job Fair Companies",
-        "Track hiring demand, participation and recruitment results."
+    st.dataframe(
+        institute_view[
+            [
+                "Institute", "District",
+                "Students Enrolled", "Students Placed",
+                "Placement Rate (%)"
+            ]
+        ],
+        use_container_width=True
     )
 
-    sector_filter = st.selectbox(
-        "Sector",
-        ["All Sectors"] + sorted(skill_data["sector"].unique())
+# ==========================================
+# 13. JOB FAIR COMPANIES
+# ==========================================
+
+elif st.session_state.page == "Job Fair Companies":
+
+    st.header("Job Fair Companies")
+
+    st.write(
+        "Review job fair participation and hiring outcomes "
+        "by district."
     )
 
-    company_view = companies.copy()
+    st.dataframe(job_fair_data, use_container_width=True)
 
-    if sector_filter != "All Sectors":
-        company_view = company_view[
-            company_view["Sector"] == sector_filter
-        ]
-
-    a, b, c = st.columns(3)
-
-    with a:
-        kpi("Companies Listed", company_view["Company"].nunique())
-
-    with b:
-        kpi("Vacancies Listed", f"{company_view['Vacancies'].sum():,}")
-
-    with c:
-        kpi("Students Hired", f"{company_view['Students Hired'].sum():,}")
-
-    st.subheader("Company Register")
-    st.dataframe(company_view, use_container_width=True, hide_index=True)
-
-    st.subheader("Vacancies by Sector")
-
-    sector_vacancies = (
-        company_view
-        .groupby("Sector", as_index=False)["Vacancies"]
-        .sum()
-    )
+    st.subheader("Job Fair Hiring Results")
 
     st.bar_chart(
-        sector_vacancies.set_index("Sector")["Vacancies"]
-    )
-
-    st.subheader("Job Fair Performance by District")
-
-    st.dataframe(job_fairs, use_container_width=True, hide_index=True)
-
-    st.bar_chart(
-        job_fairs.set_index("District")[
+        job_fair_data.set_index("District")[
             ["Companies Participated", "Companies Hired"]
         ]
     )
 
-# =====================================================
-# 15. ANALYTICS - AI SKILL PLANNING
-# =====================================================
+    st.subheader("Company Openings by Sector")
 
-elif page == "Analytics - AI Skill Planning":
-
-    page_title(
-        "AI Skill Planning & Analytics",
-        "Generate a preliminary skill-gap report from your CSV data."
+    sector_openings = (
+        hiring_companies
+        .groupby("Sector", as_index=False)["Openings"]
+        .sum()
     )
 
-    selected_district = st.selectbox(
-        "Planning district",
+    st.bar_chart(
+        sector_openings.set_index("Sector")["Openings"]
+    )
+
+# ==========================================
+# 14. ANALYTICS - AI SKILL PLANNING
+# ==========================================
+
+elif st.session_state.page == "Analytics - AI Skill Planning":
+
+    st.header("Analytics - AI Skill Planning")
+
+    st.write(
+        "Create skill plans based on unemployment, skill gaps "
+        "and demand from district_skills.csv."
+    )
+
+    district = st.selectbox(
+        "Choose District",
         sorted(skill_data["district"].unique()),
-        key="planning_district"
+        key="analytics_district"
     )
 
-    planning_focus = st.selectbox(
-        "Planning objective",
+    focus = st.selectbox(
+        "Planning Focus",
         [
-            "Reduce unemployment",
-            "Address skill gaps",
-            "Focus on growing sectors",
-            "Prepare for upcoming vacancies"
+            "Reduce Unemployment",
+            "Address Skill Gaps",
+            "Growing Skills",
+            "Growing Sectors"
         ]
     )
 
-    district_planning_data = skill_data[
-        skill_data["district"] == selected_district
-    ].copy()
+    district_records = skill_data[
+        skill_data["district"] == district
+    ]
 
-    if district_planning_data.empty:
-        st.warning("No records available for this district.")
+    if district_records.empty:
+        st.warning("No CSV records available for this district.")
     else:
         st.subheader("Skill Gap Report")
 
         planning_report = (
-            district_planning_data
+            district_records
             .groupby(["sector", "skill"], as_index=False)[
                 [
                     "demand_score", "gap_score",
@@ -1163,75 +920,70 @@ elif page == "Analytics - AI Skill Planning":
             else ("Medium" if gap >= 45 else "Monitor")
         )
 
-        st.dataframe(
-            planning_report,
-            use_container_width=True,
-            hide_index=True
-        )
+        st.dataframe(planning_report, use_container_width=True)
 
         st.bar_chart(
             planning_report.set_index("skill")["gap_score"]
         )
 
-        st.subheader("Generate Planning Recommendations")
-
-        if st.button("Generate Recommendations", type="primary"):
+        if st.button("Generate Skill Planning Report"):
 
             highest_gap = planning_report.iloc[0]
 
-            st.success("Preliminary report generated.")
+            st.success("Skill planning report generated.")
 
-            st.markdown(f"**District:** {selected_district}")
-            st.markdown(f"**Objective:** {planning_focus}")
-            st.markdown(
+            st.write(f"**District:** {district}")
+            st.write(f"**Planning Focus:** {focus}")
+            st.write(
                 f"**Highest-gap skill:** {highest_gap['skill']}"
             )
-            st.markdown(
+            st.write(
                 f"**Sector:** {highest_gap['sector']}"
             )
-            st.markdown(
+            st.write(
                 f"**Average gap score:** {highest_gap['gap_score']}"
             )
 
-            st.markdown("#### Suggested Actions")
+            st.markdown("#### Recommended Actions")
 
             st.write(
                 f"1. Assess training capacity for "
-                f"{highest_gap['skill']} in {selected_district}."
+                f"{highest_gap['skill']} in {district}."
             )
             st.write(
-                "2. Contact employers and companies with vacancies "
-                "matching this skill."
+                "2. Contact companies with openings in the "
+                "matching sector."
             )
             st.write(
-                "3. Review institute placement performance before "
-                "selecting training providers."
+                "3. Review training institute placement performance."
             )
             st.write(
-                "4. Track enrolment, completion and placement outcomes "
+                "4. Track enrolment, completion and placement "
                 "after implementation."
             )
 
             st.warning(
-                "These are rule-based planning suggestions generated from "
-                "your CSV scores. They are not verified policy recommendations."
+                "This report is generated from CSV scores and is "
+                "intended for demonstration and planning support only."
             )
 
-# =====================================================
-# 16. PLANS
-# =====================================================
+# ==========================================
+# 15. PLANS
+# ==========================================
 
-elif page == "Plans":
+elif st.session_state.page == "Plans":
 
-    page_title(
-        "Skill Plans & Reports",
-        "Create a plan, define targets and review saved planning records."
+    st.header("Skill Plans")
+
+    st.write(
+        "Create and manage skill planning records for districts."
     )
 
     with st.form("create_plan_form"):
+
         plan_name = st.text_input(
-            "Plan title",
-            placeholder="Example: District Python Training Plan"
+            "Plan Title",
+            placeholder="Example: Python Training Plan"
         )
 
         plan_district = st.selectbox(
@@ -1246,28 +998,25 @@ elif page == "Plans":
         )
 
         plan_skill = st.selectbox(
-            "Target skill",
+            "Target Skill",
             district_skills
         )
 
         target_students = st.number_input(
-            "Target students to train",
+            "Target Students",
             min_value=1,
             max_value=100000,
             value=100
         )
 
-        training_institute = st.selectbox(
-            "Proposed training institute",
+        institute = st.selectbox(
+            "Training Institute",
             institute_templates
         )
 
-        target_date = st.date_input("Target completion date")
+        target_date = st.date_input("Target Completion Date")
 
-        plan_notes = st.text_area(
-            "Plan notes",
-            placeholder="Describe the skill gap and planned actions."
-        )
+        notes = st.text_area("Plan Notes")
 
         save_plan = st.form_submit_button("Save Skill Plan")
 
@@ -1275,35 +1024,27 @@ elif page == "Plans":
         if not plan_name.strip():
             st.error("Please enter a plan title.")
         else:
-            new_plan = {
+            plan = {
                 "Plan ID": f"PLAN-{len(st.session_state.plans) + 1:03}",
                 "Plan Title": plan_name,
                 "District": plan_district,
                 "Skill": plan_skill,
                 "Target Students": int(target_students),
-                "Training Institute": training_institute,
+                "Training Institute": institute,
                 "Target Date": str(target_date),
                 "Status": "Planned",
-                "Notes": plan_notes
+                "Notes": notes
             }
 
-            st.session_state.plans.append(new_plan)
-
-            st.session_state.activities.append({
-                "Date": str(date.today()),
-                "Activity": f"Created plan: {plan_name}",
-                "User": st.session_state.username
-            })
-
-            st.success("Skill plan saved for this session.")
+            st.session_state.plans.append(plan)
+            st.success("Skill plan saved.")
 
     st.subheader("Saved Plans")
 
     if st.session_state.plans:
         st.dataframe(
             pd.DataFrame(st.session_state.plans),
-            use_container_width=True,
-            hide_index=True
+            use_container_width=True
         )
 
         st.download_button(
@@ -1313,67 +1054,68 @@ elif page == "Plans":
             mime="text/csv"
         )
     else:
-        st.info("No plans saved yet. Create your first skill plan above.")
+        st.info("No plans saved yet.")
 
-# =====================================================
-# 17. EXECUTED
-# =====================================================
+# ==========================================
+# 16. EXECUTED
+# ==========================================
 
-elif page == "Executed":
+elif st.session_state.page == "Executed":
 
-    page_title(
-        "Execution Tracking",
-        "Record plan progress and outcomes."
-    )
+    st.header("Executed Plans")
 
     if not st.session_state.plans:
-        st.info(
-            "Create a skill plan first, then track its execution here."
-        )
+        st.info("Create a skill plan first.")
     else:
         plan_options = [
             plan["Plan ID"] + " — " + plan["Plan Title"]
             for plan in st.session_state.plans
         ]
 
-        chosen_plan = st.selectbox("Select skill plan", plan_options)
+        selected_plan = st.selectbox(
+            "Select Plan",
+            plan_options
+        )
 
-        selected_index = plan_options.index(chosen_plan)
+        selected_index = plan_options.index(selected_plan)
         selected_plan_record = st.session_state.plans[selected_index]
 
         with st.form("execution_form"):
-            execution_status = st.selectbox(
-                "Execution status",
-                ["Not Started", "In Progress", "Completed", "On Hold"]
+
+            status = st.selectbox(
+                "Execution Status",
+                [
+                    "Not Started",
+                    "In Progress",
+                    "Completed",
+                    "On Hold"
+                ]
             )
 
-            actual_start = st.date_input(
-                "Actual start date",
-                value=date.today()
-            )
+            start_date = st.date_input("Actual Start Date")
 
             students_trained = st.number_input(
-                "Students trained so far",
+                "Students Trained",
                 min_value=0,
                 max_value=int(selected_plan_record["Target Students"]),
                 value=0
             )
 
             students_placed = st.number_input(
-                "Students placed so far",
+                "Students Placed",
                 min_value=0,
                 max_value=int(selected_plan_record["Target Students"]),
                 value=0
             )
 
-            actual_spend = st.number_input(
-                "Actual expenditure (INR)",
+            expenditure = st.number_input(
+                "Expenditure (INR)",
                 min_value=0,
                 value=0,
                 step=1000
             )
 
-            execution_notes = st.text_area("Execution notes")
+            execution_notes = st.text_area("Execution Notes")
 
             save_execution = st.form_submit_button(
                 "Save Execution Update"
@@ -1384,35 +1126,25 @@ elif page == "Executed":
                 "Plan ID": selected_plan_record["Plan ID"],
                 "Plan Title": selected_plan_record["Plan Title"],
                 "District": selected_plan_record["District"],
-                "Status": execution_status,
-                "Actual Start": str(actual_start),
+                "Status": status,
+                "Start Date": str(start_date),
                 "Students Trained": int(students_trained),
                 "Students Placed": int(students_placed),
-                "Actual Expenditure (INR)": int(actual_spend),
+                "Expenditure (INR)": int(expenditure),
                 "Notes": execution_notes
             }
 
             st.session_state.executions.append(execution)
-            selected_plan_record["Status"] = execution_status
-
-            st.session_state.activities.append({
-                "Date": str(date.today()),
-                "Activity": (
-                    "Execution updated: "
-                    f"{selected_plan_record['Plan Title']}"
-                ),
-                "User": st.session_state.username
-            })
+            selected_plan_record["Status"] = status
 
             st.success("Execution update saved.")
 
-    st.subheader("Execution Register")
+    st.subheader("Execution Records")
 
     if st.session_state.executions:
         st.dataframe(
             pd.DataFrame(st.session_state.executions),
-            use_container_width=True,
-            hide_index=True
+            use_container_width=True
         )
 
         st.download_button(
@@ -1422,92 +1154,73 @@ elif page == "Executed":
             mime="text/csv"
         )
     else:
-        st.info("No execution updates recorded yet.")
+        st.info("No execution updates saved yet.")
 
-# =====================================================
-# 18. RESULTS
-# =====================================================
+# ==========================================
+# 17. RESULTS
+# ==========================================
 
-elif page == "Results":
+elif st.session_state.page == "Results":
 
-    page_title(
-        "Outcomes & Results",
-        "Review training outputs, placements and skill-gap indicators."
-    )
+    st.header("Results")
 
     if st.session_state.executions:
+
         result_data = pd.DataFrame(st.session_state.executions)
 
-        target_students_total = sum(
-            plan["Target Students"] for plan in st.session_state.plans
+        total_target = sum(
+            plan["Target Students"]
+            for plan in st.session_state.plans
         )
 
-        trained_total = int(result_data["Students Trained"].sum())
-        placed_total = int(result_data["Students Placed"].sum())
-        spend_total = int(
-            result_data["Actual Expenditure (INR)"].sum()
-        )
+        total_trained = int(result_data["Students Trained"].sum())
+        total_placed = int(result_data["Students Placed"].sum())
+        total_spend = int(result_data["Expenditure (INR)"].sum())
 
-        a, b, c, d = st.columns(4)
+        c1, c2, c3, c4 = st.columns(4)
 
-        with a:
-            kpi(
-                "Planned Student Targets",
-                f"{target_students_total:,}"
-            )
+        c1.metric("Target Students", total_target)
+        c2.metric("Students Trained", total_trained)
+        c3.metric("Students Placed", total_placed)
+        c4.metric("Expenditure", f"₹{total_spend:,}")
 
-        with b:
-            kpi("Students Trained", f"{trained_total:,}")
+        st.subheader("Execution Results")
 
-        with c:
-            kpi("Students Placed", f"{placed_total:,}")
-
-        with d:
-            kpi("Reported Expenditure", f"₹{spend_total:,}")
-
-        st.subheader("Execution Outcomes")
-        st.dataframe(result_data, use_container_width=True, hide_index=True)
+        st.dataframe(result_data, use_container_width=True)
 
         st.bar_chart(
             result_data.set_index("Plan Title")[
                 ["Students Trained", "Students Placed"]
             ]
         )
+
     else:
         st.info(
-            "No execution results are available yet. Create a plan, record "
-            "an execution update, and return here to review outcomes."
+            "No execution results available. Create and execute "
+            "a skill plan first."
         )
 
-    st.subheader("Skill Gap by District")
+    st.subheader("District Skill Gap")
 
     st.bar_chart(
         district_summary.set_index("District")["Average Skill Gap"]
     )
 
-    st.subheader("Skill Demand by Skill")
+    st.subheader("Top Skills by Demand")
 
-    top_demand_skills = skill_summary.sort_values(
-        "Average Demand Score", ascending=False
-    ).head(15)
+    top_skills = skill_demand.head(10)
 
     st.bar_chart(
-        top_demand_skills.set_index("Skill")["Average Demand Score"]
+        top_skills.set_index("Skill")["Demand Score"]
     )
 
-    st.warning(
-        "Employment, institute, company and job-fair figures are derived "
-        "from your CSV scores for demonstration purposes. Replace them with "
-        "verified administrative records for production use."
-    )
-
-# =====================================================
-# 19. FOOTER
-# =====================================================
+# ==========================================
+# 18. FOOTER
+# ==========================================
 
 st.divider()
 
 st.caption(
-    "District Labour & Skill Intelligence Portal | "
-    "Powered by district_skills.csv | Demonstration build"
+    "Labour & Skill Planning System | "
+    "Powered by district_skills.csv | Demonstration Version"
 )
