@@ -130,21 +130,74 @@ div[data-testid="stMetricValue"] {
 """, unsafe_allow_html=True)
 
 # =====================================================
-# 3. LOAD DISTRICT_SKILLS CSV
+# 3. LOAD AND CLEAN CSV
 # =====================================================
 
 CSV_FILE = "district_skills.csv"
 
 try:
-    skill_data = pd.read_csv(CSV_FILE)
+    skill_data = None
+
+    # Automatically try comma, semicolon and tab separators
+    for separator in [",", ";", "\t"]:
+        try:
+            temp_df = pd.read_csv(
+                CSV_FILE,
+                sep=separator,
+                encoding="utf-8-sig",
+                skip_blank_lines=True
+            )
+
+            if len(temp_df.columns) >= 5:
+                skill_data = temp_df
+                break
+
+        except Exception:
+            continue
+
+    if skill_data is None:
+        st.error(
+            "Could not read district_skills.csv. "
+            "Please check that it is a valid CSV file."
+        )
+        st.stop()
 
     # Clean column names
     skill_data.columns = (
         skill_data.columns
+        .astype(str)
+        .str.replace("\ufeff", "", regex=False)
         .str.strip()
         .str.lower()
         .str.replace(" ", "_")
+        .str.replace("-", "_")
     )
+
+    # Show detected columns in sidebar for troubleshooting
+    with st.sidebar:
+        st.caption("CSV columns detected:")
+        st.write(", ".join(skill_data.columns))
+
+    # Map common alternative column names
+    column_aliases = {
+        "district_name": "district",
+        "districts": "district",
+        "sector_name": "sector",
+        "sectors": "sector",
+        "skill_name": "skill",
+        "skills": "skill",
+        "demand": "demand_score",
+        "demand_index": "demand_score",
+        "gap": "gap_score",
+        "gap_index": "gap_score",
+        "training": "training_access",
+        "training_score": "training_access",
+        "momentum_score": "momentum",
+        "year": "period",
+        "data_source": "source"
+    }
+
+    skill_data = skill_data.rename(columns=column_aliases)
 
     required_columns = [
         "district", "sector", "skill",
@@ -153,48 +206,66 @@ try:
         "period", "source"
     ]
 
-    missing_columns = [
-        col for col in required_columns
-        if col not in skill_data.columns
-    ]
+    # Create missing columns automatically
+    defaults = {
+        "district": "Unknown District",
+        "sector": "General",
+        "skill": "General Skill",
+        "demand_score": 50,
+        "gap_score": 50,
+        "training_access": 50,
+        "momentum": 50,
+        "period": "2025",
+        "source": "Demo data"
+    }
+
+    missing_columns = []
+
+    for column in required_columns:
+        if column not in skill_data.columns:
+            skill_data[column] = defaults[column]
+            missing_columns.append(column)
 
     if missing_columns:
-        st.error(
-            "The CSV file is missing these required columns: "
+        st.warning(
+            "These columns were missing and were filled with demo values: "
             f"{', '.join(missing_columns)}"
         )
-        st.stop()
 
-    # Clean values
-    skill_data["district"] = skill_data["district"].astype(str).str.strip()
-    skill_data["sector"] = skill_data["sector"].astype(str).str.strip()
-    skill_data["skill"] = skill_data["skill"].astype(str).str.strip()
+    # Clean text columns
+    for column in ["district", "sector", "skill", "period", "source"]:
+        skill_data[column] = (
+            skill_data[column]
+            .astype(str)
+            .str.strip()
+        )
 
+    # Clean numeric columns
     numeric_columns = [
         "demand_score", "gap_score",
         "training_access", "momentum"
     ]
 
-    for col in numeric_columns:
-        skill_data[col] = pd.to_numeric(
-            skill_data[col], errors="coerce"
-        ).fillna(0)
+    for column in numeric_columns:
+        skill_data[column] = pd.to_numeric(
+            skill_data[column],
+            errors="coerce"
+        ).fillna(50)
 
-    skill_data["period"] = skill_data["period"].astype(str)
-    skill_data["source"] = skill_data["source"].astype(str)
+    for column in numeric_columns:
+        skill_data[column] = skill_data[column].clip(0, 100)
 
 except FileNotFoundError:
     st.error(
         "Could not find `district_skills.csv`. "
-        "Please place the CSV file in the same folder as this app."
+        "Please place it in the same folder as this app."
     )
     st.stop()
 
 # =====================================================
-# 4. CREATE SUPPORTING DATA FROM CSV
+# 4. CREATE SUMMARY DATA FROM CSV
 # =====================================================
 
-# District-level summary
 district_summary = (
     skill_data
     .groupby("district", as_index=False)
@@ -217,7 +288,6 @@ district_summary = district_summary.rename(columns={
     "Skill_Records": "Skill Records"
 })
 
-# Sector-level summary
 sector_summary = (
     skill_data
     .groupby("sector", as_index=False)
@@ -238,7 +308,6 @@ sector_summary = sector_summary.rename(columns={
     "Average_Momentum": "Average Momentum"
 })
 
-# Skill-level summary
 skill_summary = (
     skill_data
     .groupby(["sector", "skill"], as_index=False)
@@ -260,7 +329,7 @@ skill_summary = skill_summary.rename(columns={
     "Average_Momentum": "Average Momentum"
 })
 
-# Simulated employment and training indicators from CSV scores
+# Simulated district employment indicators
 district_employment = district_summary.copy()
 district_employment["Employed"] = (
     district_employment["Average Demand Score"] * 80
@@ -292,6 +361,8 @@ institute_templates = [
     "Community Training Centre"
 ]
 
+np.random.seed(42)
+
 institute_rows = []
 
 for index, row in district_summary.iterrows():
@@ -299,9 +370,10 @@ for index, row in district_summary.iterrows():
     base_enrolment = int(row["Average Training Access"] * 8) + 100
 
     for institute in institute_templates:
-        enrolled = base_enrolment + np.random.randint(-30, 50)
-        enrolled = max(50, enrolled)
-
+        enrolled = max(
+            50,
+            base_enrolment + np.random.randint(-30, 50)
+        )
         skilled = int(enrolled * np.random.uniform(0.60, 0.90))
         placed = int(skilled * np.random.uniform(0.45, 0.85))
 
@@ -315,7 +387,7 @@ for index, row in district_summary.iterrows():
 
 institutes = pd.DataFrame(institute_rows)
 
-# Simulated company data from skills and districts
+# Simulated company data
 company_templates = [
     "ABC Technologies",
     "Digital Solutions Pvt Ltd",
@@ -333,7 +405,9 @@ for index, row in skill_data.iterrows():
         "Sector": row["sector"],
         "District": row["district"],
         "Skill Required": row["skill"],
-        "Vacancies": int(row["demand_score"] * np.random.uniform(0.15, 0.45)),
+        "Vacancies": int(
+            row["demand_score"] * np.random.uniform(0.15, 0.45)
+        ),
         "Participated in Job Fair": np.random.choice(["Yes", "No"]),
         "Students Hired": int(
             row["demand_score"] * np.random.uniform(0.05, 0.25)
@@ -509,6 +583,7 @@ st.markdown(
     '<div class="main-title">District Labour & Skill Intelligence</div>',
     unsafe_allow_html=True
 )
+
 st.markdown(
     '<div class="subtitle">Employment monitoring • Skill-gap analysis • '
     'Training coordination • Outcome tracking</div>',
@@ -520,6 +595,7 @@ st.caption(
     f"{st.session_state.role} | "
     f"{date.today().strftime('%d %b %Y')}"
 )
+
 st.divider()
 
 
