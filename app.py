@@ -335,7 +335,67 @@ with st.sidebar:
         st.session_state.username = ""
         st.session_state.role = ""
         st.rerun()
+# ---------- SIDEBAR NAVIGATION ----------
 
+with st.sidebar:
+    st.title("District Labour & Skill")
+    st.caption("Intelligence Portal")
+    st.divider()
+
+    st.markdown("### OVERVIEW")
+    st.markdown("### MONITORING")
+    st.markdown("### INTELLIGENCE & ACTION")
+
+    pages = [
+        "Explore Dashboard",
+        "Users",
+        "District Admin Dashboard",
+        "State Admin",
+        "Training Institutes",
+        "Job Fair Companies",
+        "Analytics - AI Skill Planning",
+        "Plans",
+        "Executed",
+        "Results",
+    ]
+
+    page = st.radio(
+        "Navigation",
+        pages,
+        key="main_page_navigation",
+        label_visibility="collapsed",
+    )
+    # ---------- PAGE ROUTING ----------
+
+if page == "Explore Dashboard":
+    st.title("Explore Dashboard")
+
+elif page == "Users":
+    st.title("Users")
+
+elif page == "District Admin Dashboard":
+    st.title("District Admin Dashboard")
+
+elif page == "State Admin":
+    st.title("State Admin")
+
+elif page == "Training Institutes":
+    st.title("Training Institutes")
+
+elif page == "Job Fair Companies":
+    st.title("Job Fair Companies")
+
+elif page == "Analytics - AI Skill Planning":
+    st.title("Analytics - AI Skill Planning")
+
+elif page == "Plans":
+    st.title("Plans")
+
+elif page == "Executed":
+    st.title("Executed")
+
+elif page == "Results":
+    st.title("Results")
 # ==================================================
 # 7. RESOLVE NAVIGATION
 # One page selector controls the entire application.
