@@ -1,201 +1,101 @@
-Record Type	Name	Employed Students	Unemployed Students	Job Openings	Openings	Job Fairs Conducted	Students Participated	Students Placed	Companies Participated	Companies Hired	Students Enrolled	Students Skilled
-District	District 01	628	175	481								
-Job Fair	District 01					5	428	222	57	11		
-District	District 02	578	582	232								
-Job Fair	District 02					2	295	303	24	37		
-District	District 03	454	353	865								
-Job Fair	District 03					10	629	305	38	42		
-District	District 04	969	156	363								
-Job Fair	District 04					8	548	364	19	18		
-District	District 05	1089	254	294								
-Job Fair	District 05					8	299	447	32	43		
-District	District 06	941	194	670								
-Job Fair	District 06					10	327	467	15	40		
-District	District 07	1000	520	791								
-Job Fair	District 07					5	921	151	12	19		
-District	District 08	992	231	438								
-Job Fair	District 08					3	589	364	39	45		
-District	District 09	1147	316	579								
-Job Fair	District 09					7	414	353	54	9		
-District	District 10	750	696	450								
-Job Fair	District 10					4	673	468	27	45		
-District	District 11	849	482	257								
-Job Fair	District 11					5	1041	112	30	30		
-District	District 12	948	217	416								
-Job Fair	District 12					11	1097	402	23	36		
-District	District 13	1210	619	346								
-Job Fair	District 13					6	342	332	57	40		
-District	District 14	938	588	797								
-Job Fair	District 14					8	570	304	18	37		
-District	District 15	1410	243	248								
-Job Fair	District 15					3	356	243	60	32		
-District	District 16	530	544	590								
-Job Fair	District 16					11	679	621	26	40		
-District	District 17	423	267	898								
-Job Fair	District 17					10	968	353	59	26		
-District	District 18	628	450	645								
-Job Fair	District 18					4	664	83	56	21		
-District	District 19	1425	332	719								
-Job Fair	District 19					3	1091	385	50	37		
-District	District 20	807	306	582								
-Job Fair	District 20					4	752	623	10	43		
-District	District 21	1063	650	219								
-Job Fair	District 21					3	1151	451	29	20		
-District	District 22	518	396	780								
-Job Fair	District 22					3	287	577	14	39		
-District	District 23	657	281	875								
-Job Fair	District 23					9	1169	642	20	21		
-District	District 24	1480	583	416								
-Job Fair	District 24					10	973	285	55	24		
-District	District 25	1217	532	648								
-Job Fair	District 25					10	662	203	25	19		
-District	District 26	531	496	221								
-Job Fair	District 26					11	767	315	47	19		
-District	District 27	414	222	846								
-Job Fair	District 27					2	434	149	12	26		
-District	District 28	545	676	443								
-Job Fair	District 28					6	885	577	23	39		
-District	District 29	670	634	448								
-Job Fair	District 29					9	1026	496	22	11		
-District	District 30	598	591	562								
-Job Fair	District 30					8	620	558	56	8		
-District	District 31	601	212	612								
-Job Fair	District 31					7	1019	191	25	17		
-District	District 32	789	699	659								
-Job Fair	District 32					4	632	267	27	34		
-District	District 33	911	227	653								
-Job Fair	District 33					10	300	131	51	39		
-District	District 34	430	245	442								
-Job Fair	District 34					4	616	577	40	18		
-District	District 35	1221	210	368								
-Job Fair	District 35					8	202	479	26	34		
-District	District 36	984	583	769								
-Job Fair	District 36					12	935	578	19	17		
-District	District 37	1007	372	259								
-Job Fair	District 37					11	953	635	13	25		
-District	District 38	517	201	798								
-Job Fair	District 38					9	714	623	20	8		
-District	District 39	1440	232	390								
-Job Fair	District 39					3	809	149	53	20		
-District	District 40	1226	272	783								
-Job Fair	District 40					5	792	688	12	44		
-District	District 41	567	579	873								
-Job Fair	District 41					11	778	615	30	21		
-District	District 42	818	471	444								
-Job Fair	District 42					6	605	214	52	24		
-District	District 43	1336	473	274								
-Job Fair	District 43					2	669	656	16	9		
-District	District 44	836	668	471								
-Job Fair	District 44					4	1155	437	14	20		
-District	District 45	1156	441	361								
-Job Fair	District 45					9	1053	636	55	24		
-District	District 46	1483	158	883								
-Job Fair	District 46					10	506	186	18	21		
-District	District 47	636	259	766								
-Job Fair	District 47					4	478	368	48	18		
-District	District 48	1102	358	849								
-Job Fair	District 48					6	717	580	26	8		
-District	District 49	589	583	483								
-Job Fair	District 49					2	203	421	59	13		
-District	District 50	936	315	652								
-Job Fair	District 50					10	922	517	45	5		
-District	District 51	629	227	352								
-Job Fair	District 51					10	236	458	47	40		
-District	District 52	703	590	330								
-Job Fair	District 52					2	515	453	60	7		
-District	District 53	1132	365	898								
-Job Fair	District 53					5	882	185	32	40		
-District	District 54	1232	308	442								
-Job Fair	District 54					4	1199	261	36	6		
-District	District 55	767	490	621								
-Job Fair	District 55					12	1084	334	27	15		
-District	District 56	621	541	239								
-Job Fair	District 56					9	427	284	39	27		
-District	District 57	1025	383	428								
-Job Fair	District 57					2	875	277	35	26		
-District	District 58	970	221	485								
-Job Fair	District 58					7	856	601	35	39		
-District	District 59	1078	178	318								
-Job Fair	District 59					6	382	674	26	7		
-District	District 60	622	594	553								
-Job Fair	District 60					7	646	700	42	12		
-District	District 61	1188	344	460								
-Job Fair	District 61					2	925	526	10	38		
-District	District 62	803	522	641								
-Job Fair	District 62					3	1171	418	49	25		
-District	District 63	655	457	719								
-Job Fair	District 63					6	882	498	30	30		
-District	District 64	1005	280	396								
-Job Fair	District 64					8	880	468	53	16		
-District	District 65	1016	565	761								
-Job Fair	District 65					2	511	373	23	32		
-District	District 66	1059	626	652								
-Job Fair	District 66					9	891	298	42	35		
-District	District 67	747	236	490								
-Job Fair	District 67					10	879	423	15	20		
-District	District 68	1035	380	403								
-Job Fair	District 68					4	225	127	25	35		
-District	District 69	549	616	624								
-Job Fair	District 69					12	789	279	55	29		
-District	District 70	1412	559	449								
-Job Fair	District 70					4	871	85	58	11		
-District	District 71	1270	374	380								
-Job Fair	District 71					10	675	131	45	20		
-District	District 72	648	617	336								
-Job Fair	District 72					9	883	623	45	43		
-District	District 73	1049	603	827								
-Job Fair	District 73					10	636	641	38	15		
-District	District 74	1372	610	465								
-Job Fair	District 74					5	1060	363	59	38		
-District	District 75	1392	394	481								
-Job Fair	District 75					9	279	372	25	22		
-District	District 76	1087	477	753								
-Job Fair	District 76					3	341	234	24	29		
-District	District 77	712	369	265								
-Job Fair	District 77					8	617	418	44	34		
-District	District 78	1251	213	411								
-Job Fair	District 78					8	598	678	54	6		
-District	District 79	1179	638	206								
-Job Fair	District 79					7	505	479	36	39		
-District	District 80	851	649	424								
-Job Fair	District 80					6	646	577	11	29		
-District	District 81	1088	564	369								
-Job Fair	District 81					9	1141	210	49	39		
-District	District 82	455	553	806								
-Job Fair	District 82					11	878	107	15	32		
-District	District 83	677	622	386								
-Job Fair	District 83					2	466	468	30	18		
-District	District 84	1331	484	545								
-Job Fair	District 84					8	484	511	26	10		
-District	District 85	1363	169	752								
-Job Fair	District 85					2	1174	438	24	9		
-District	District 86	482	181	453								
-Job Fair	District 86					5	1059	100	49	14		
-District	District 87	888	279	684								
-Job Fair	District 87					12	317	657	23	34		
-District	District 88	924	527	371								
-Job Fair	District 88					11	821	197	59	15		
-District	District 89	1037	260	792								
-Job Fair	District 89					2	1151	399	46	29		
-District	District 90	1212	353	277								
-Job Fair	District 90					11	907	328	16	24		
-District	District 91	647	192	555								
-Job Fair	District 91					10	638	459	14	37		
-District	District 92	1098	162	630								
-Job Fair	District 92					9	308	523	33	45		
-District	District 93	1341	306	645								
-Job Fair	District 93					4	951	614	51	22		
-District	District 94	1390	626	646								
-Job Fair	District 94					11	474	410	25	10		
-District	District 95	971	611	449								
-Job Fair	District 95					9	783	468	31	6		
-District	District 96	1412	482	386								
-Job Fair	District 96					9	417	443	26	26		
-District	District 97	972	432	769								
-Job Fair	District 97					2	729	275	15	20		
-District	District 98	1232	650	768								
-Job Fair	District 98					5	907	567	51	36		
-District	District 99	1317	167	295								
-Job Fair	District 99					6	426	494	54	20		
-District	District 100	1027	527	684								
-Job Fair	District 100					10	743	432	37	40
+District	Employed Students	Unemployed Students	Job Openings	Skill	Skill Openings	Sector	Sector Openings	Job Fairs Conducted	Students Participated	Students Placed	Companies Participated	Companies Hired	Institute	Students Enrolled	Students Skilled	Students Placed
+Bagalkot	1709	264	205	Solar Technician	180	Manufacturing	184	4	459	406	59	39	Women Skill Development Centre	452	311	56
+Ballari	461	245	403	Electrician	298	Automotive	83	10	657	426	53	49	Vocational Training Institute	364	219	154
+Belagavi	1606	434	186	Mobile Repair	121	Banking	286	7	819	139	25	15	Technical Training Centre	197	136	52
+Bengaluru Rural	1135	502	798	Accounting	62	Healthcare	305	10	505	253	17	13	Community Skills Academy	471	396	335
+Bengaluru Urban	793	221	226	Welding	156	Construction	218	3	726	111	36	22	Women Skill Development Centre	475	399	123
+Bidar	1158	513	394	Cloud Computing	176	Education	106	4	1343	433	27	10	Industrial Training Institute	344	223	203
+Chamarajanagar	1540	374	881	Healthcare Assistance	68	Banking	86	7	1071	197	16	8	Polytechnic Skill Hub	517	393	148
+Chikkaballapur	1742	661	585	Digital Marketing	274	IT	205	4	755	441	47	39	Women Skill Development Centre	532	458	338
+Chikkamagaluru	1217	520	404	Solar Technician	300	Textiles	116	2	474	138	52	15	Rural Development Training Institute	455	220	138
+Chitradurga	1181	760	659	Digital Marketing	168	Automotive	75	3	1349	444	29	29	Rural Development Training Institute	207	130	95
+Dakshina Kannada	723	614	183	Solar Technician	174	Agriculture	161	10	467	380	31	31	Digital Learning Centre	461	257	79
+Davanagere	1165	315	732	Data Analytics	311	Education	70	7	1250	69	19	19	District Employment Training Centre	307	199	54
+Dharwad	893	730	260	Welding	288	Logistics	105	10	507	125	54	35	Government Skill Centre	234	172	148
+Gadag	833	702	927	Digital Marketing	142	Logistics	229	8	1014	284	45	33	Rural Development Training Institute	276	181	56
+Hassan	1092	171	782	Digital Marketing	157	Logistics	182	2	395	383	15	8	Polytechnic Skill Hub	166	116	49
+Haveri	1452	393	465	Cloud Computing	288	Manufacturing	346	4	1218	184	62	35	Women Skill Development Centre	247	135	52
+Kalaburagi	1749	591	542	Retail Sales	250	Renewable Energy	97	3	374	266	58	26	Community Skills Academy	277	173	88
+Kodagu	1498	609	323	Web Development	133	Textiles	306	5	404	286	63	60	Polytechnic Skill Hub	200	96	81
+Kolar	1507	165	275	Healthcare Assistance	161	Textiles	278	9	1235	169	37	8	Government Skill Centre	344	154	89
+Koppal	943	615	472	Mobile Repair	324	Manufacturing	319	4	638	211	25	6	Digital Learning Centre	526	513	71
+Mandya	1042	208	231	Retail Sales	284	Manufacturing	341	4	366	320	17	7	Women Skill Development Centre	454	221	212
+Mysuru	881	563	302	Plumbing	331	Banking	366	2	417	274	54	42	Government Skill Centre	417	267	106
+Raichur	818	835	913	Solar Technician	162	Manufacturing	272	4	864	294	32	29	Technical Training Centre	154	127	119
+Ramanagara	1553	252	255	Plumbing	149	Renewable Energy	205	4	964	95	27	16	Community Skills Academy	230	215	179
+Shivamogga	1019	776	849	Digital Marketing	44	Agriculture	353	6	462	128	28	8	Polytechnic Skill Hub	530	521	119
+Tumakuru	957	438	799	Mobile Repair	215	Textiles	394	6	1285	310	28	6	District Employment Training Centre	474	429	181
+Udupi	490	153	521	Data Analytics	106	Healthcare	204	4	1154	342	57	32	Rural Development Training Institute	154	83	44
+Uttara Kannada	705	708	216	Python Programming	229	Manufacturing	352	4	1130	125	14	9	Industrial Training Institute	170	121	66
+Vijayapura	1796	405	862	Cloud Computing	221	Textiles	356	8	566	181	22	10	Rural Development Training Institute	162	94	87
+Yadgir	1080	571	865	Cloud Computing	167	Healthcare	151	3	1033	79	42	19	Industrial Training Institute	385	262	118
+Bagalkot	866	378	204	Cloud Computing	138	Education	238	6	392	202	34	25	Digital Learning Centre	354	332	314
+Ballari	1078	178	298	Plumbing	173	Retail	367	6	328	115	50	32	District Employment Training Centre	523	395	263
+Belagavi	1641	673	298	Web Development	335	Logistics	200	2	1143	60	45	39	Polytechnic Skill Hub	336	261	57
+Bengaluru Rural	1760	488	818	CNC Operation	103	Healthcare	223	10	883	401	38	25	Vocational Training Institute	506	378	323
+Bengaluru Urban	660	346	610	Welding	234	Manufacturing	159	6	1081	340	65	5	Digital Learning Centre	296	186	150
+Bidar	1587	771	850	Digital Marketing	278	Healthcare	296	5	1296	302	62	62	Community Skills Academy	487	262	112
+Chamarajanagar	1455	829	828	Web Development	211	Agriculture	190	6	710	161	21	5	District Employment Training Centre	275	244	196
+Chikkaballapur	549	616	604	Digital Marketing	334	Healthcare	266	9	1068	184	21	5	Digital Learning Centre	548	463	152
+Chikkamagaluru	760	680	655	Retail Sales	325	Retail	132	9	523	297	54	38	District Employment Training Centre	454	285	283
+Chitradurga	1306	777	916	Solar Technician	298	Renewable Energy	350	9	575	440	42	33	Technical Training Centre	534	366	366
+Dakshina Kannada	967	683	676	Cloud Computing	162	Renewable Energy	295	3	835	180	29	15	Polytechnic Skill Hub	426	211	75
+Davanagere	708	386	572	CNC Operation	118	Manufacturing	179	3	1099	268	33	22	Digital Learning Centre	362	177	92
+Dharwad	1260	548	778	Plumbing	50	Logistics	364	8	1226	63	34	14	Digital Learning Centre	364	300	152
+Gadag	1399	374	459	Data Analytics	288	Automotive	269	7	1078	430	22	19	Polytechnic Skill Hub	468	223	140
+Hassan	1612	727	858	Web Development	82	Textiles	289	4	1195	153	15	9	Government Skill Centre	317	196	156
+Haveri	1069	495	568	Python Programming	255	Retail	111	9	289	251	46	8	Government Skill Centre	264	135	123
+Kalaburagi	482	181	433	Electrician	50	Automotive	148	5	508	302	54	12	Polytechnic Skill Hub	261	236	219
+Kodagu	924	527	351	Data Analytics	350	Banking	128	4	887	115	49	6	Women Skill Development Centre	444	372	232
+Kolar	1212	353	257	Mobile Repair	164	Logistics	224	3	334	237	46	32	Technical Training Centre	185	147	122
+Koppal	1098	162	610	Cloud Computing	290	Renewable Energy	291	7	1191	422	21	18	Women Skill Development Centre	525	503	373
+Mandya	953	780	731	Web Development	287	Healthcare	293	6	910	185	65	64	Women Skill Development Centre	292	246	102
+Mysuru	1351	733	804	Accounting	234	Healthcare	84	9	915	153	43	18	District Employment Training Centre	282	213	111
+Raichur	1620	432	749	Electrician	304	Healthcare	113	5	1082	310	47	20	Vocational Training Institute	480	467	269
+Ramanagara	435	245	481	Web Development	247	Telecommunications	194	6	1005	302	47	38	Digital Learning Centre	367	355	321
+Shivamogga	1077	510	899	Python Programming	178	Logistics	198	5	497	429	24	15	Polytechnic Skill Hub	530	512	430
+Tumakuru	779	346	401	Solar Technician	287	Renewable Energy	371	10	829	111	65	17	Vocational Training Institute	266	211	85
+Udupi	1019	164	905	Solar Technician	104	Automotive	93	2	1383	209	56	13	Technical Training Centre	202	201	43
+Uttara Kannada	1575	441	660	Accounting	265	Finance	164	2	767	304	19	18	Digital Learning Centre	355	284	58
+Vijayapura	1581	794	882	Retail Sales	117	Agriculture	358	6	424	187	19	13	Rural Development Training Institute	460	359	356
+Yadgir	862	685	569	Python Programming	266	Healthcare	371	8	875	351	51	8	Digital Learning Centre	528	287	282
+Bagalkot	825	790	396	Python Programming	81	Healthcare	192	4	1380	98	22	5	District Employment Training Centre	380	347	344
+Ballari	1362	448	213	Electrician	187	Agriculture	214	9	395	179	28	25	Government Skill Centre	488	320	257
+Belagavi	635	707	410	Textile	116	Manufacturing	206	4	396	90	22	14	Women Skill Development Centre	533	530	511
+Bengaluru Rural	991	599	307	Textile	195	Healthcare	276	6	1274	336	43	33	Rural Development Training Institute	456	215	150
+Bengaluru Urban	1060	768	436	Web Development	86	Automotive	364	2	801	355	14	7	Women Skill Development Centre	415	352	266
+Bidar	969	335	779	Electrician	291	Automotive	310	7	1086	230	32	26	District Employment Training Centre	232	188	145
+Chamarajanagar	1414	445	858	Retail Sales	321	Telecommunications	302	3	894	189	32	8	Industrial Training Institute	413	396	40
+Chikkaballapur	1746	705	653	Web Development	67	Healthcare	335	7	1270	380	40	8	Government Skill Centre	286	268	73
+Chikkamagaluru	989	598	895	Textile	102	IT	392	5	574	219	47	5	District Employment Training Centre	358	184	97
+Chitradurga	632	622	300	Welding	118	Hospitality	219	10	809	272	65	35	District Employment Training Centre	274	239	181
+Dakshina Kannada	696	542	375	CNC Operation	346	Agriculture	139	3	815	272	33	30	Digital Learning Centre	286	128	76
+Davanagere	1011	751	773	Accounting	290	Construction	146	9	1353	307	34	15	Vocational Training Institute	540	521	233
+Dharwad	1332	479	373	Plumbing	162	Manufacturing	266	5	1091	82	32	28	Vocational Training Institute	511	424	237
+Gadag	1759	817	335	Textile	58	Agriculture	327	7	455	285	18	13	Government Skill Centre	157	88	66
+Hassan	1740	308	256	Python Programming	175	Manufacturing	389	8	414	228	55	39	Government Skill Centre	312	300	289
+Haveri	1508	186	812	Textile	160	Hospitality	217	5	435	282	18	17	District Employment Training Centre	377	211	116
+Kalaburagi	459	197	512	Data Analytics	68	Education	253	7	1132	134	27	21	Industrial Training Institute	439	371	132
+Kodagu	748	329	260	Data Analytics	235	Agriculture	193	9	543	178	41	21	Rural Development Training Institute	280	128	99
+Kolar	989	843	739	Solar Technician	77	Agriculture	246	6	1118	413	28	19	Industrial Training Institute	251	210	163
+Koppal	618	392	570	Electrician	223	Healthcare	221	6	294	272	54	30	Technical Training Centre	154	141	127
+Mandya	500	770	943	Welding	186	Logistics	187	7	698	385	24	24	Rural Development Training Institute	497	293	200
+Mysuru	598	792	841	Mobile Repair	198	Renewable Energy	295	2	997	434	20	7	Polytechnic Skill Hub	317	248	84
+Raichur	811	285	732	Digital Marketing	227	Logistics	326	6	586	191	64	35	District Employment Training Centre	532	412	98
+Ramanagara	1359	227	324	Electrician	155	Finance	273	10	999	106	62	30	Technical Training Centre	285	265	71
+Shivamogga	1331	527	868	Healthcare Assistance	174	Telecommunications	265	7	471	405	26	20	Rural Development Training Institute	467	377	352
+Tumakuru	853	813	244	Cloud Computing	277	Retail	224	8	488	131	14	5	Vocational Training Institute	402	209	64
+Udupi	880	700	318	Retail Sales	272	Telecommunications	346	8	566	272	53	11	Technical Training Centre	465	417	183
+Uttara Kannada	467	529	402	Accounting	267	Telecommunications	255	3	1002	338	53	27	Community Skills Academy	353	228	88
+Vijayapura	650	615	273	Python Programming	148	Education	397	2	353	230	27	9	Community Skills Academy	255	131	110
+Yadgir	824	750	401	Cloud Computing	159	Manufacturing	145	2	817	134	20	13	Women Skill Development Centre	206	176	46
+Bagalkot	669	165	546	Web Development	161	Renewable Energy	235	2	606	195	15	7	District Employment Training Centre	419	217	56
+Ballari	1375	609	550	Solar Technician	343	Manufacturing	301	10	703	374	14	13	Polytechnic Skill Hub	384	336	55
+Belagavi	524	640	591	Web Development	95	Automotive	297	3	415	224	50	14	Technical Training Centre	214	131	119
+Bengaluru Rural	1696	749	741	Digital Marketing	206	Telecommunications	375	10	853	292	44	43	Vocational Training Institute	200	191	69
+Bengaluru Urban	1740	816	744	Healthcare Assistance	150	Finance	301	5	1097	233	64	34	Government Skill Centre	362	348	88
+Bidar	1040	587	500	Cloud Computing	170	Banking	148	9	387	106	65	10	District Employment Training Centre	371	190	135
+Chamarajanagar	666	719	241	Web Development	327	Construction	238	3	1091	241	54	53	Industrial Training Institute	519	259	113
+Chikkaballapur	1629	469	540	Welding	335	Logistics	178	4	1237	174	18	10	Polytechnic Skill Hub	338	181	111
+Chikkamagaluru	1575	381	619	Welding	327	Agriculture	388	10	303	215	54	49	Industrial Training Institute	164	96	57
+Chitradurga	1032	497	539	Web Development	132	IT	143	8	392	132	59	45	Vocational Training Institute	196	183	175
