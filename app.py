@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 from datetime import date
@@ -19,125 +20,64 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Main application */
 .stApp {
-    background-color: #F5F7FA;
-    color: #1F2937;
+    background-color: #F4F7FB;
 }
-
-/* Sidebar */
 [data-testid="stSidebar"] {
-    background-color: #0F2D46;
+    background-color: #102D46;
 }
-
-/* Force sidebar text to be clearly visible */
 [data-testid="stSidebar"] * {
-    color: #FFFFFF !important;
+    color: #FFFFFF;
 }
-
-[data-testid="stSidebar"] .stCaption,
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
-[data-testid="stSidebar"] label,
-[data-testid="stSidebar"] p {
-    color: #FFFFFF !important;
-    font-weight: 500;
-}
-
-[data-testid="stSidebar"] div[role="radiogroup"] label,
-[data-testid="stSidebar"] [data-baseweb="select"] *,
-[data-testid="stSidebar"] [data-baseweb="popover"] * {
-    color: #FFFFFF !important;
-}
-
-/* Main titles */
 .main-title {
     font-size: 30px;
     font-weight: 750;
-    color: #0F2A43;
+    color: #123B5D;
 }
-
 .subtitle {
-    color: #4B5A6B;
+    color: #63758A;
     font-size: 14px;
 }
-
 .section-title {
     font-size: 21px;
     font-weight: 700;
-    color: #123B5D;
+    color: #173D5B;
 }
-
-/* KPI cards */
 .kpi {
-    background: #FFFFFF;
-    border: 1px solid #D8E0EA;
+    background: white;
+    border: 1px solid #E1E8F0;
     border-radius: 12px;
     padding: 18px;
     min-height: 120px;
-    color: #1F2937;
 }
-
 .kpi-label {
-    color: #55677A;
+    color: #60758A;
     font-size: 13px;
 }
-
 .kpi-value {
-    color: #0F2A43;
+    color: #123B5D;
     font-size: 28px;
     font-weight: 750;
 }
-
 .kpi-note {
-    color: #1F7A4D;
+    color: #27805C;
     font-size: 12px;
 }
-
-/* Streamlit metric cards */
 div[data-testid="stMetric"] {
-    background: #FFFFFF;
+    background: white;
     padding: 15px;
-    border: 1px solid #D8E0EA;
+    border: 1px solid #E1E8F0;
     border-radius: 12px;
-    color: #1F2937;
 }
-
-div[data-testid="stMetricLabel"] p {
-    color: #55677A !important;
-}
-
-div[data-testid="stMetricValue"] {
-    color: #0F2A43 !important;
-}
-
-/* Tables and captions */
-[data-testid="stDataFrame"],
-[data-testid="stDataFrame"] * {
-    color: #1F2937 !important;
-}
-
-.stCaption,
-[data-testid="stCaptionContainer"] {
-    color: #4B5A6B !important;
-}
-
-/* Buttons */
 .stButton button {
     border-radius: 8px;
-    background-color: #1F6FEB;
-    color: #FFFFFF;
-    border: none;
-}
-
-.stButton button:hover {
-    background-color: #1858C4;
-    color: #FFFFFF;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # =====================================================
 # 3. SAMPLE DATA
+# All numbers below are illustrative, not official data.
 # =====================================================
 
 districts = pd.DataFrame({
@@ -233,6 +173,7 @@ for key, value in defaults.items():
 
 # =====================================================
 # 5. LOGIN AND REGISTRATION
+# Demo authentication only; do not use for production.
 # =====================================================
 
 if not st.session_state.logged_in:
@@ -299,7 +240,7 @@ if not st.session_state.logged_in:
                 )
 
     st.info(
-        "Demo version: accounts are stored only in the current session. "
+        "Demo version: accounts are stored in the current session. "
         "A production portal needs secure authentication and a database."
     )
     st.stop()
@@ -320,16 +261,15 @@ with st.sidebar:
     st.divider()
     st.caption("OVERVIEW")
 
-    st.radio(
+    page = st.radio(
         "Overview",
         ["Explore Dashboard", "Users"],
-        label_visibility="collapsed",
-        key="overview_menu"
+        label_visibility="collapsed"
     )
 
     st.caption("MONITORING")
 
-    st.radio(
+    monitoring_page = st.radio(
         "Monitoring",
         [
             "District Admin Dashboard",
@@ -337,13 +277,12 @@ with st.sidebar:
             "Training Institutes",
             "Job Fair Companies"
         ],
-        label_visibility="collapsed",
-        key="monitoring_menu"
+        label_visibility="collapsed"
     )
 
     st.caption("INTELLIGENCE & ACTION")
 
-    st.radio(
+    action_page = st.radio(
         "Intelligence and Action",
         [
             "Analytics - AI Skill Planning",
@@ -351,8 +290,7 @@ with st.sidebar:
             "Executed",
             "Results"
         ],
-        label_visibility="collapsed",
-        key="action_menu"
+        label_visibility="collapsed"
     )
 
     st.divider()
@@ -362,23 +300,38 @@ with st.sidebar:
         st.session_state.username = ""
         st.rerun()
 
-# Use one page selector to avoid conflicting sidebar menus
-page = st.selectbox(
-    "Open page",
-    [
-        "Explore Dashboard",
-        "Users",
-        "District Admin Dashboard",
-        "State Admin",
-        "Training Institutes",
-        "Job Fair Companies",
-        "Analytics - AI Skill Planning",
-        "Plans",
-        "Executed",
-        "Results"
-    ],
-    key="selected_page"
+# Resolve selected page
+# The first radio is the default page; other menus take priority
+# when their current selection is changed.
+if "last_page" not in st.session_state:
+    st.session_state.last_page = "Explore Dashboard"
+
+# Read the radio widget values
+overview_value = st.session_state.get("Overview", "Explore Dashboard")
+monitoring_value = st.session_state.get(
+    "Monitoring", "District Admin Dashboard"
 )
+action_value = st.session_state.get(
+    "Intelligence and Action", "Analytics - AI Skill Planning"
+)
+
+# Use a single effective page selected by the changed menu.
+# The sidebar also offers direct selection below for clarity.
+with st.sidebar:
+    st.caption("QUICK PAGE SELECT")
+    selected_page = st.selectbox(
+        "Open page",
+        [
+            "Explore Dashboard", "Users",
+            "District Admin Dashboard", "State Admin",
+            "Training Institutes", "Job Fair Companies",
+            "Analytics - AI Skill Planning", "Plans",
+            "Executed", "Results"
+        ],
+        key="quick_page"
+    )
+
+page = selected_page
 
 # =====================================================
 # 7. SHARED HEADER AND HELPERS
@@ -389,18 +342,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown(
-    '<div class="subtitle">Employment monitoring • Skill-gap analysis • '
-    'Training coordination • Outcome tracking</div>',
+    '<div class="subtitle">Employment monitoring • Skill-gap analysis '
+    '• Training coordination • Outcome tracking</div>',
     unsafe_allow_html=True
 )
 
 st.caption(
-    f"Signed in as {st.session_state.username} | "
-    f"{st.session_state.role} | "
-    f"{date.today().strftime('%d %b %Y')}"
+    f"Signed in as {st.session_state.username}  |  "
+    f"{st.session_state.role}  |  {date.today().strftime('%d %b %Y')}"
 )
 st.divider()
-
 
 def kpi(label, value, note="Illustrative demo data"):
     st.markdown(
@@ -414,16 +365,18 @@ def kpi(label, value, note="Illustrative demo data"):
         unsafe_allow_html=True
     )
 
-
 def page_title(title, description):
-    st.markdown(
-        f'<div class="section-title">{title}</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown(f'<div class="section-title">{title}</div>',
+                unsafe_allow_html=True)
     st.caption(description)
 
+def get_placement_rate(frame):
+    total = frame["Enrolled"].sum()
+    placed = frame["Placed"].sum()
+    return round(100 * placed / total, 1) if total else 0
+
 # =====================================================
-# 8. EXPLORE DASHBOARD
+# 8. PAGE 1: EXPLORE DASHBOARD
 # =====================================================
 
 if page == "Explore Dashboard":
@@ -433,30 +386,30 @@ if page == "Explore Dashboard":
         "A consolidated overview of employment, skill demand and training."
     )
 
-    a, b, c, d = st.columns(4)
+    total_employed = districts["Employed"].sum()
+    total_unemployed = districts["Unemployed"].sum()
+    total_vacancies = districts["Vacancies"].sum()
+    total_placed = institutes["Placed"].sum()
 
+    a, b, c, d = st.columns(4)
     with a:
         kpi("Districts Covered", len(districts))
-
     with b:
-        kpi("Employed Students", f"{districts['Employed'].sum():,}")
-
+        kpi("Employed Students", f"{total_employed:,}")
     with c:
-        kpi("Unemployed Students", f"{districts['Unemployed'].sum():,}")
-
+        kpi("Unemployed Students", f"{total_unemployed:,}")
     with d:
-        kpi("Reported Vacancies", f"{districts['Vacancies'].sum():,}")
+        kpi("Reported Vacancies", f"{total_vacancies:,}")
 
     st.write("")
-
     left, right = st.columns([1.5, 1])
 
     with left:
         st.subheader("Employment by District")
-        employment_chart = districts.set_index("District")[
+        chart_data = districts.set_index("District")[
             ["Employed", "Unemployed"]
         ]
-        st.bar_chart(employment_chart)
+        st.bar_chart(chart_data)
 
     with right:
         st.subheader("Highest Skill Demand")
@@ -467,7 +420,6 @@ if page == "Explore Dashboard":
     st.dataframe(districts, use_container_width=True, hide_index=True)
 
     st.subheader("Recent Portal Activity")
-
     if st.session_state.activities:
         st.dataframe(
             pd.DataFrame(st.session_state.activities),
@@ -483,7 +435,7 @@ if page == "Explore Dashboard":
     st.caption("All figures on this demo screen are illustrative.")
 
 # =====================================================
-# 9. USERS
+# 9. PAGE 2: USERS
 # =====================================================
 
 elif page == "Users":
@@ -502,7 +454,6 @@ elif page == "Users":
             }
             for name, details in st.session_state.users.items()
         ]
-
         st.dataframe(
             pd.DataFrame(user_rows),
             use_container_width=True,
@@ -531,12 +482,13 @@ elif page == "Users":
     st.dataframe(roles, use_container_width=True, hide_index=True)
 
     st.warning(
-        "This is not a secure user-management system. Role-based permissions "
-        "and database-backed accounts must be added before deployment."
+        "This is not a secure user-management system. "
+        "Role-based page permissions and database-backed accounts "
+        "must be added before deployment."
     )
 
 # =====================================================
-# 10. DISTRICT ADMIN DASHBOARD
+# 10. PAGE 3: DISTRICT ADMIN DASHBOARD
 # =====================================================
 
 elif page == "District Admin Dashboard":
@@ -563,13 +515,10 @@ elif page == "District Admin Dashboard":
 
     with a:
         kpi("Employed", f"{district_row['Employed']:,}")
-
     with b:
         kpi("Unemployed", f"{district_row['Unemployed']:,}")
-
     with c:
         kpi("Job Vacancies", f"{district_row['Vacancies']:,}")
-
     with d:
         kpi("Training Enrolment", f"{district_row['Training Enrolment']:,}")
 
@@ -602,21 +551,14 @@ elif page == "District Admin Dashboard":
     st.subheader("Job Fair Outcomes")
 
     a, b, c = st.columns(3)
-
     with a:
         kpi("Fairs Conducted", int(district_fair["Fairs Conducted"]))
-
     with b:
-        kpi(
-            "Students Participated",
-            f"{int(district_fair['Students Participated']):,}"
-        )
-
+        kpi("Students Participated",
+            f"{int(district_fair['Students Participated']):,}")
     with c:
-        kpi(
-            "Students Placed",
-            f"{int(district_fair['Students Placed']):,}"
-        )
+        kpi("Students Placed",
+            f"{int(district_fair['Students Placed']):,}")
 
     st.subheader("Hiring Companies and Openings")
 
@@ -624,13 +566,17 @@ elif page == "District Admin Dashboard":
         companies["District"] == selected_district
     ]
 
-    st.dataframe(company_filter, use_container_width=True, hide_index=True)
+    st.dataframe(
+        company_filter,
+        use_container_width=True,
+        hide_index=True
+    )
 
     st.subheader("District Summary")
     st.dataframe(districts, use_container_width=True, hide_index=True)
 
 # =====================================================
-# 11. STATE ADMIN
+# 11. PAGE 4: STATE ADMIN
 # =====================================================
 
 elif page == "State Admin":
@@ -641,13 +587,10 @@ elif page == "State Admin":
     )
 
     a, b, c = st.columns(3)
-
     with a:
         kpi("Districts Monitored", len(districts))
-
     with b:
         kpi("Total Unemployed", f"{districts['Unemployed'].sum():,}")
-
     with c:
         kpi("Total Vacancies", f"{districts['Vacancies'].sum():,}")
 
@@ -679,7 +622,7 @@ elif page == "State Admin":
     )
 
 # =====================================================
-# 12. TRAINING INSTITUTES
+# 12. PAGE 5: TRAINING INSTITUTES
 # =====================================================
 
 elif page == "Training Institutes":
@@ -706,13 +649,10 @@ elif page == "Training Institutes":
     total_placed = institute_view["Placed"].sum()
 
     a, b, c = st.columns(3)
-
     with a:
         kpi("Students Enrolled", f"{total_enrolled:,}")
-
     with b:
         kpi("Students Skilled", f"{total_skilled:,}")
-
     with c:
         kpi("Students Placed", f"{total_placed:,}")
 
@@ -744,7 +684,7 @@ elif page == "Training Institutes":
     st.dataframe(ranked, use_container_width=True, hide_index=True)
 
 # =====================================================
-# 13. JOB FAIR COMPANIES
+# 13. PAGE 6: JOB FAIR COMPANIES
 # =====================================================
 
 elif page == "Job Fair Companies":
@@ -770,10 +710,8 @@ elif page == "Job Fair Companies":
 
     with a:
         kpi("Companies Listed", len(company_view))
-
     with b:
         kpi("Vacancies Listed", f"{company_view['Vacancies'].sum():,}")
-
     with c:
         kpi("Students Hired", f"{company_view['Students Hired'].sum():,}")
 
@@ -800,7 +738,7 @@ elif page == "Job Fair Companies":
     )
 
 # =====================================================
-# 14. ANALYTICS - AI SKILL PLANNING
+# 14. PAGE 7: ANALYTICS - AI SKILL PLANNING
 # =====================================================
 
 elif page == "Analytics - AI Skill Planning":
@@ -827,6 +765,7 @@ elif page == "Analytics - AI Skill Planning":
     )
 
     skill_analysis = skills.copy()
+
     skill_analysis["Skill Gap"] = (
         skill_analysis["Demand"]
         - skill_analysis["Available Candidates"]
@@ -845,7 +784,9 @@ elif page == "Analytics - AI Skill Planning":
         hide_index=True
     )
 
-    st.bar_chart(skill_analysis.set_index("Skill")["Skill Gap"])
+    st.bar_chart(
+        skill_analysis.set_index("Skill")["Skill Gap"]
+    )
 
     st.subheader("Generate Planning Recommendations")
 
@@ -902,7 +843,7 @@ elif page == "Analytics - AI Skill Planning":
     """)
 
 # =====================================================
-# 15. PLANS
+# 15. PAGE 8: PLANS
 # =====================================================
 
 elif page == "Plans":
@@ -972,7 +913,6 @@ elif page == "Plans":
             }
 
             st.session_state.plans.append(new_plan)
-
             st.session_state.activities.append({
                 "Date": str(date.today()),
                 "Activity": f"Created plan: {plan_name}",
@@ -989,18 +929,19 @@ elif page == "Plans":
             use_container_width=True,
             hide_index=True
         )
+    else:
+        st.info("No plans saved yet. Create your first skill plan above.")
 
+    if st.session_state.plans:
         st.download_button(
             "Download Plans as CSV",
             pd.DataFrame(st.session_state.plans).to_csv(index=False),
             file_name="skill_plans.csv",
             mime="text/csv"
         )
-    else:
-        st.info("No plans saved yet. Create your first skill plan above.")
 
 # =====================================================
-# 16. EXECUTED
+# 16. PAGE 9: EXECUTED
 # =====================================================
 
 elif page == "Executed":
@@ -1011,9 +952,7 @@ elif page == "Executed":
     )
 
     if not st.session_state.plans:
-        st.info(
-            "Create a skill plan first, then track its execution here."
-        )
+        st.info("Create a skill plan first, then track its execution here.")
     else:
         plan_options = [
             plan["Plan ID"] + " — " + plan["Plan Title"]
@@ -1059,9 +998,7 @@ elif page == "Executed":
 
             execution_notes = st.text_area("Execution notes")
 
-            save_execution = st.form_submit_button(
-                "Save Execution Update"
-            )
+            save_execution = st.form_submit_button("Save Execution Update")
 
         if save_execution:
             execution = {
@@ -1081,10 +1018,7 @@ elif page == "Executed":
 
             st.session_state.activities.append({
                 "Date": str(date.today()),
-                "Activity": (
-                    "Execution updated: "
-                    f"{selected_plan_record['Plan Title']}"
-                ),
+                "Activity": f"Execution updated: {selected_plan_record['Plan Title']}",
                 "User": st.session_state.username
             })
 
@@ -1109,7 +1043,7 @@ elif page == "Executed":
         st.info("No execution updates recorded yet.")
 
 # =====================================================
-# 17. RESULTS
+# 17. PAGE 10: RESULTS
 # =====================================================
 
 elif page == "Results":
@@ -1135,17 +1069,11 @@ elif page == "Results":
         a, b, c, d = st.columns(4)
 
         with a:
-            kpi(
-                "Planned Student Targets",
-                f"{target_students_total:,}"
-            )
-
+            kpi("Planned Student Targets", f"{target_students_total:,}")
         with b:
             kpi("Students Trained", f"{trained_total:,}")
-
         with c:
             kpi("Students Placed", f"{placed_total:,}")
-
         with d:
             kpi("Reported Expenditure", f"₹{spend_total:,}")
 
@@ -1157,10 +1085,11 @@ elif page == "Results":
                 ["Students Trained", "Students Placed"]
             ]
         )
+
     else:
         st.info(
-            "No execution results are available yet. Create a plan, record "
-            "an execution update, and return here to review outcomes."
+            "No execution results are available yet. Create a plan, "
+            "record an execution update, and return here to review outcomes."
         )
 
     st.subheader("Employment and Skill-Gap Indicators")
@@ -1183,9 +1112,9 @@ elif page == "Results":
         st.bar_chart(result_skills.set_index("Skill")["Skill Gap"])
 
     st.warning(
-        "Actual trends require dated historical records. These charts show "
-        "sample current values, not verified trends or proof that a plan "
-        "caused a change in unemployment."
+        "Actual trends require dated historical records. "
+        "These charts show sample current values, not verified trends "
+        "or proof that a plan caused a change in unemployment."
     )
 
 # =====================================================
