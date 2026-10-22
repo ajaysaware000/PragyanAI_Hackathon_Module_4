@@ -587,85 +587,264 @@ elif st.session_state.page == "Analytics - AI Skill Planning":
 # 14. PLANS
 # ==========================================
 
-elif st.session_state.page == "Plans":
+# Store plans during the current Streamlit session
+if "skill_plans" not in st.session_state:
+    st.session_state.skill_plans = []
 
+if st.session_state.page == "Plans":
     st.header("Skill Plans")
+    st.write("Create, save, and manage district skill-planning activities.")
 
-    st.write(
-        "Display and manage skill planning reports created "
-        "by the District Admin."
-    )
+    with st.form("create_skill_plan_form"):
+        st.subheader("Create a New Skill Plan")
 
-    st.info(
-        "The plan creation, saving and report display workflow "
-        "will be implemented in the next step."
-    )
+        plan_col1, plan_col2 = st.columns(2)
+
+        with plan_col1:
+            plan_district = st.selectbox(
+                "Select District",
+                district_data["District"].tolist(),
+                key="plan_district"
+            )
+            plan_focus = st.selectbox(
+                "Planning Focus",
+                [
+                    "Reduce Unemployment",
+                    "Address Skill Gaps",
+                    "Growing Skills",
+                    "Growing Sectors"
+                ],
+                key="plan_focus"
+            )
+            plan_activity = st.selectbox(
+                "Training / Activity",
+                [
+                    "Python Training",
+                    "Data Analytics Training",
+                    "Electrical Training",
+                    "Welding Training",
+                    "Healthcare Support Training",
+                    "Organise Job Fair",
+                    "Industry Skill Workshop"
+                ],
+                key="plan_activity"
+            )
+
+        with plan_col2:
+            target_students = st.number_input(
+                "Target Students",
+                min_value=1,
+                max_value=100000,
+                value=100,
+                step=10,
+                key="plan_target"
+            )
+            plan_duration = st.selectbox(
+                "Planned Duration",
+                ["1 month", "3 months", "6 months", "12 months"],
+                key="plan_duration"
+            )
+            plan_responsible = st.text_input(
+                "Responsible Institute / Organisation",
+                value="District Training Institute",
+                key="plan_responsible"
+            )
+
+        plan_notes = st.text_area(
+            "Plan Description",
+            placeholder="Describe the training or activity and expected outcome.",
+            key="plan_notes"
+        )
+
+        save_plan = st.form_submit_button(
+            "Save Skill Plan",
+            use_container_width=True
+        )
+
+    if save_plan:
+        if not plan_responsible.strip():
+            st.error("Please enter the responsible institute or organisation.")
+        else:
+            new_plan = {
+                "Plan ID": len(st.session_state.skill_plans) + 1,
+                "District": plan_district,
+                "Planning Focus": plan_focus,
+                "Activity": plan_activity,
+                "Target Students": int(target_students),
+                "Duration": plan_duration,
+                "Responsible Organisation": plan_responsible.strip(),
+                "Description": plan_notes.strip(),
+                "Status": "Planned",
+                "Students Trained": 0,
+                "Students Placed": 0
+            }
+            st.session_state.skill_plans.append(new_plan)
+            st.success("Skill plan saved successfully!")
+            st.rerun()
+
+    st.divider()
+    st.subheader("Saved Skill Plans")
+
+    if st.session_state.skill_plans:
+        plans_df = pd.DataFrame(st.session_state.skill_plans)
+        st.dataframe(plans_df, use_container_width=True, hide_index=True)
+        st.download_button(
+            "Download Plans as CSV",
+            data=plans_df.to_csv(index=False).encode("utf-8"),
+            file_name="skill_plans.csv",
+            mime="text/csv"
+        )
+    else:
+        st.info("No skill plans saved yet. Use the form above to create your first plan.")
+
 
 # ==========================================
 # 15. EXECUTED
 # ==========================================
 
 elif st.session_state.page == "Executed":
-
     st.header("Executed Plans")
+    st.write("Update the status and outcomes of your saved skill plans.")
 
-    st.write(
-        "Track which planned activities have actually been executed."
-    )
+    plans = st.session_state.get("skill_plans", [])
 
-    execution_data = pd.DataFrame({
-        "Activity": [
-            "Python Training",
-            "Electrical Training",
-            "Job Fair"
-        ],
-        "Status": [
-            "Planned",
-            "In Progress",
-            "Planned"
-        ]
-    })
+    if not plans:
+        st.info("No saved plans are available. Open the Plans section and create a plan first.")
+    else:
+        for plan in plans:
+            with st.expander(
+                f"Plan {plan['Plan ID']}: {plan['Activity']} — {plan['District']}",
+                expanded=False
+            ):
+                st.write(f"**Planning focus:** {plan['Planning Focus']}")
+                st.write(f"**Target students:** {plan['Target Students']}")
+                st.write(f"**Responsible organisation:** {plan['Responsible Organisation']}")
 
-    st.dataframe(execution_data, use_container_width=True)
+                with st.form(f"update_plan_{plan['Plan ID']}"):
+                    status_options = ["Planned", "In Progress", "Completed"]
+                    current_status = (
+                        plan["Status"]
+                        if plan["Status"] in status_options
+                        else "Planned"
+                    )
+                    updated_status = st.selectbox(
+                        "Execution Status",
+                        status_options,
+                        index=status_options.index(current_status),
+                        key=f"status_{plan['Plan ID']}"
+                    )
+                    trained = st.number_input(
+                        "Students Trained",
+                        min_value=0,
+                        max_value=int(plan["Target Students"]),
+                        value=min(int(plan["Students Trained"]), int(plan["Target Students"])),
+                        key=f"trained_{plan['Plan ID']}"
+                    )
+                    placed = st.number_input(
+                        "Students Placed",
+                        min_value=0,
+                        max_value=int(trained),
+                        value=min(int(plan["Students Placed"]), int(trained)),
+                        key=f"placed_{plan['Plan ID']}"
+                    )
+                    update_plan = st.form_submit_button("Save Execution Update")
 
-    st.info(
-        "Execution dates, completion status and actual results "
-        "will be connected to saved plans later."
-    )
+                if update_plan:
+                    plan["Status"] = updated_status
+                    plan["Students Trained"] = int(trained)
+                    plan["Students Placed"] = int(placed)
+                    st.success("Execution details updated.")
+                    st.rerun()
+
+        st.subheader("Execution Summary")
+        execution_df = pd.DataFrame(plans)
+        st.dataframe(
+            execution_df[
+                ["Plan ID", "District", "Activity", "Target Students",
+                 "Students Trained", "Students Placed", "Status"]
+            ],
+            use_container_width=True,
+            hide_index=True
+        )
+
 
 # ==========================================
 # 16. RESULTS
 # ==========================================
 
 elif st.session_state.page == "Results":
-
     st.header("Results")
+    st.write("Review training progress, student placements, and district employment indicators.")
 
-    st.write(
-        "Monitor changes in unemployment and skill gaps "
-        "after skill plans are executed."
-    )
+    plans = st.session_state.get("skill_plans", [])
 
-    c1, c2 = st.columns(2)
+    if plans:
+        results_df = pd.DataFrame(plans)
 
-    with c1:
-        st.subheader("Unemployment Trend")
-        st.write(
-            "Historical unemployment data will be displayed here."
+        total_plans = len(results_df)
+        completed_plans = int((results_df["Status"] == "Completed").sum())
+        students_targeted = int(results_df["Target Students"].sum())
+        students_trained = int(results_df["Students Trained"].sum())
+        students_placed = int(results_df["Students Placed"].sum())
+        placement_rate = (
+            round((students_placed / students_trained) * 100, 1)
+            if students_trained > 0 else 0.0
         )
 
-    with c2:
-        st.subheader("Skill Gap Trend")
-        st.write(
-            "Historical skill-demand and training-gap data "
-            "will be displayed here."
+        c1, c2, c3, c4, c5 = st.columns(5)
+        c1.metric("Total Plans", total_plans)
+        c2.metric("Completed Plans", completed_plans)
+        c3.metric("Students Targeted", students_targeted)
+        c4.metric("Students Trained", students_trained)
+        c5.metric("Students Placed", students_placed)
+
+        st.metric("Placement Rate among Trained Students", f"{placement_rate}%")
+
+        st.subheader("Plan Status Summary")
+        status_counts = (
+            results_df["Status"]
+            .value_counts()
+            .reindex(["Planned", "In Progress", "Completed"], fill_value=0)
+        )
+        st.bar_chart(status_counts)
+
+        st.subheader("Training and Placement by Activity")
+        activity_results = results_df.groupby("Activity")[
+            ["Target Students", "Students Trained", "Students Placed"]
+        ].sum()
+        st.bar_chart(activity_results)
+
+        st.subheader("Results by District")
+        district_results = results_df.groupby("District")[
+            ["Target Students", "Students Trained", "Students Placed"]
+        ].sum()
+        st.dataframe(district_results, use_container_width=True)
+
+        st.download_button(
+            "Download Results as CSV",
+            data=results_df.to_csv(index=False).encode("utf-8"),
+            file_name="skill_plan_results.csv",
+            mime="text/csv"
+        )
+    else:
+        st.info(
+            "No plan results are available yet. Create a plan in Plans, "
+            "then update its status and student outcomes in Executed. "
+            "The results will appear here automatically."
         )
 
-    st.info(
-        "Trend analysis requires historical data. "
-        "The next development step will add a way to save "
-        "and compare results over time."
+    st.divider()
+    st.subheader("District Employment Overview")
+    st.caption("This section uses the sample district data already defined in the code.")
+    st.dataframe(district_data, use_container_width=True)
+
+    st.subheader("Unemployment and Job Openings")
+    st.bar_chart(
+        district_data.set_index("District")[
+            ["Unemployed Students", "Job Openings"]
+        ]
     )
+
 
 # ==========================================
 # 17. FOOTER
